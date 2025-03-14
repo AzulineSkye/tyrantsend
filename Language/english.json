@@ -1,0 +1,12 @@
+{
+"skill" : {
+	"tyrantsSlash": {
+			"name": "Tyrant's Slash",
+			"description": "<b>Charge</c> and slam an apropriated sword down for <y>500%-2000% damage</c>."
+		},
+	"tyrantsSlashBoosted": {
+			"name": "Slicing Luminesence",
+			"description": "<b>Charge</c> and swing an apropriated sword upwards for <y>500%-2000% damage</c>, summoning a rending maelstrom dealing <y>700%-1400% damage per second</c>."
+		},
+	},
+}
