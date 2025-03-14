@@ -31,6 +31,20 @@ objMaelstrom:onStep(function(self)
 		self.speed = self.speed + 0.24
 	end
 	
+	local pulllist = List.new()
+	self:collision_rectangle_list(self.x - 110, self.y - 110, self.x + 110, self.y + 110, gm.constants.pActorCollisionBase, false, true, pulllist, false)
+	for _, victim in ipairs(pulllist) do
+		if victim.team ~= self.parent.team and not GM.actor_is_boss(victim) then
+			print(gm.collision_line(victim.x, victim.y, self.x, self.y, gm.constants.pBlock, false, true))
+			if gm.collision_line(victim.x, victim.y, self.x, self.y, gm.constants.pBlock, false, true) == -4 then
+				local direction = gm.degtorad(gm.point_direction(victim.x, victim.y, self.x, self.y))
+				victim.x = victim.x + gm.cos(direction) * 2.4 * self.parent.attack_speed
+				victim.y = victim.y + -gm.sin(direction) * 2.4 * self.parent.attack_speed
+			end
+		end
+	end
+	pulllist:destroy()
+	
 	if data.timer % 8 == 0 then
 		local victims = self:get_collisions(gm.constants.pActorCollisionBase)
 		for _, victim in ipairs(victims) do
