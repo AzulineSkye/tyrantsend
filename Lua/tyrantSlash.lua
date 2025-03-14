@@ -8,7 +8,7 @@ local sndCharge = Resources.sfx_load(NAMESPACE, "tyrantsSlashCharge", path.combi
 
 local objMaelstrom = Object.new(NAMESPACE, "tyrantsSlashMaelstrom")
 objMaelstrom.obj_sprite = sprMaelstrom
-objMaelstrom.obj_depth = 0
+objMaelstrom.obj_depth = 00
 objMaelstrom:clear_callbacks()
 
 objMaelstrom:onCreate(function(self)
