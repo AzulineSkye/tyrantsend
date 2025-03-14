@@ -1,4 +1,4 @@
-Adds Captain from Risk of Rain 2.
+Adds Usurper from Risk of Rain 1's DD's Variant Pack.
 
 Online compatibility not tested.
 

@@ -1,8 +1,8 @@
 {
-	"name": "Tyrant Slash",
+	"name": "Tyrant's End",
 	"version_number": "0.0.1",
 	"website_url": "",
-	"description": "Adds Tyrant's Slash (Usurper's special ability from DD's Variant Pack) as an alt skill for commando.",
+	"description": "Adds Usurper from ROR1's DD's Variant Pack mod.",
 	"dependencies": [
 		"ReturnOfModding-ReturnOfModding-1.0.56",
 		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.2.8",
