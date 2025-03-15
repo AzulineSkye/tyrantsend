@@ -1,8 +1,8 @@
 local sprSkills = Resources.sprite_load(NAMESPACE, "tyrantsSlashIcon", path.combine(PATH, "Sprites/skills.png"), 2)
 local sprShoot1 = Resources.sprite_load(NAMESPACE, "tyrantsSlash", path.combine(PATH, "Sprites/shoot1.png"), 13, 41, 38)
 local sprShoot1B = Resources.sprite_load(NAMESPACE, "tyrantsSlashB", path.combine(PATH, "Sprites/shoot1b.png"), 13, 41, 38)
-local sprShoot2 = Resources.sprite_load(NAMESPACE, "tyrantsSlashScepter", path.combine(PATH, "Sprites/shoot2.png"), 14, 42, 58)
-local sprShoot2B = Resources.sprite_load(NAMESPACE, "tyrantsSlashBScepter", path.combine(PATH, "Sprites/shoot2b.png"), 14, 42, 58)
+local sprShoot2 = Resources.sprite_load(NAMESPACE, "tyrantsSlashScepter", path.combine(PATH, "Sprites/shoot2.png"), 14, 41, 55)
+local sprShoot2B = Resources.sprite_load(NAMESPACE, "tyrantsSlashBScepter", path.combine(PATH, "Sprites/shoot2b.png"), 14, 41, 55)
 local sprMaelstrom = Resources.sprite_load(NAMESPACE, "tyrantsSlashMaelstrom", path.combine(PATH, "Sprites/maelstrom.png"), 8, 30, 32)
 local sndCharge = Resources.sfx_load(NAMESPACE, "tyrantsSlashCharge", path.combine(PATH, "Sprites/slashCharge.ogg"))
 
@@ -35,17 +35,20 @@ objMaelstrom:onStep(function(self)
 	self:collision_rectangle_list(self.x - 110, self.y - 110, self.x + 110, self.y + 110, gm.constants.pActorCollisionBase, false, true, pulllist, false)
 	for _, victim in ipairs(pulllist) do
 		if victim.team ~= self.parent.team and not GM.actor_is_boss(victim) then
-			print(gm.collision_line(victim.x, victim.y, self.x, self.y, gm.constants.pBlock, false, true))
 			if gm.collision_line(victim.x, victim.y, self.x, self.y, gm.constants.pBlock, false, true) == -4 then
 				local direction = gm.degtorad(gm.point_direction(victim.x, victim.y, self.x, self.y))
-				victim.x = victim.x + gm.cos(direction) * 2.4 * self.parent.attack_speed
-				victim.y = victim.y + -gm.sin(direction) * 2.4 * self.parent.attack_speed
+				if not victim:is_colliding(gm.constants.pBlock, victim.x + gm.cos(direction) * 2.4 * self.parent.attack_speed, victim.y) then
+					victim.x = victim.x + gm.cos(direction) * 2.4 * self.parent.attack_speed
+				end
+				if not victim:is_colliding(gm.constants.pBlock, victim.x, victim.y + -gm.sin(direction) * 2.4 * self.parent.attack_speed) then
+					victim.y = victim.y + -gm.sin(direction) * 2.4 * self.parent.attack_speed
+				end
 			end
 		end
 	end
 	pulllist:destroy()
 	
-	if data.timer % 8 == 0 then
+	if data.timer > 0 and data.timer % 8 == 0 then
 		local victims = self:get_collisions(gm.constants.pActorCollisionBase)
 		for _, victim in ipairs(victims) do
 			if self.parent:is_authority() and victim.team ~= self.parent.team then
@@ -56,6 +59,10 @@ objMaelstrom:onStep(function(self)
 	end
 	
 	if data.timer <= 0 then
+		self.image_alpha = self.image_alpha - 0.05
+	end
+	
+	if data.timer <= 0 and self.image_alpha <= 0 then
 		self:destroy()
 	end
 end)
