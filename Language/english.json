@@ -1,10 +1,34 @@
 {
+"survivor" : {
+	"usurper" : {
+		"name" : "Usurper",
+		"nameUpper" : "USURPER",
+		"description": "The <y>Usurper</c> is a soldier, hardened with experience and lacking humanity. Having stolen the powers of a greater being, he favors close quarters over distance",
+		"endQuote": "..and so he left, finding means to an end.",
+		"story": "umm idk i killed providence i think",
+		"arrival": "your moms house",
+		"departure": "not your moms house",
+		"id": "Travel ID: 13138303C4145425359425544414F4C4C4C414D435",
+		}
+	},
 "skill" : {
-	"tyrantsSlash": {
+	"usurperZ": {
+			"name": "Gilded Tap",
+			"description": "Shoot rapidly for <y>60% damage</c>."
+		},
+	"usurperX": {
+			"name": "Gilded Jacket",
+			"description": "Shoot through enemies for <y>150%-400% damage</c>, <b>dealing more damage to closer enemies</c>, knocking them back."
+		},
+	"usurperC": {
+			"name": "Transcendant Dive",
+			"description": "Roll forwards, summoning an <b>Umbra</c> that <b>counterattacks</c> for <y>300% damage</c> plus <r>a portion of your missing health</c>."
+		},
+	"usurperV": {
 			"name": "Tyrant's Slash",
 			"description": "<b>Charge</c> and slam an apropriated sword down for <y>500%-2000% damage</c>."
 		},
-	"tyrantsSlashBoosted": {
+	"usurperVboosted": {
 			"name": "Slicing Luminesence",
 			"description": "<b>Charge</c> and swing an apropriated sword upwards for <y>500%-2000% damage</c>, summoning a rending maelstrom dealing <y>700%-1400% damage per second</c>."
 		},

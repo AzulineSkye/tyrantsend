@@ -1,13 +1,104 @@
-local sprSkills = Resources.sprite_load(NAMESPACE, "tyrantsSlashIcon", path.combine(PATH, "Sprites/skills.png"), 2)
-local sprShoot1 = Resources.sprite_load(NAMESPACE, "tyrantsSlash", path.combine(PATH, "Sprites/shoot1.png"), 13, 41, 38)
-local sprShoot1B = Resources.sprite_load(NAMESPACE, "tyrantsSlashB", path.combine(PATH, "Sprites/shoot1b.png"), 13, 41, 38)
-local sprShoot2 = Resources.sprite_load(NAMESPACE, "tyrantsSlashScepter", path.combine(PATH, "Sprites/shoot2.png"), 14, 41, 55)
-local sprShoot2B = Resources.sprite_load(NAMESPACE, "tyrantsSlashBScepter", path.combine(PATH, "Sprites/shoot2b.png"), 14, 41, 55)
-local sprMaelstrom = Resources.sprite_load(NAMESPACE, "tyrantsSlashMaelstrom", path.combine(PATH, "Sprites/maelstrom.png"), 8, 30, 32)
-local sndCharge = Resources.sfx_load(NAMESPACE, "tyrantsSlashCharge", path.combine(PATH, "Sprites/slashCharge.ogg"))
+local sprite_loadout = Resources.sprite_load(NAMESPACE, "usurperSelect", path.combine(PATH, "Sprites/select.png"), 13, 28, 0)
+local sprite_portrait = Resources.sprite_load(NAMESPACE, "usurperPortrait", path.combine(PATH, "Sprites/portrait.png"), 3)
+local sprite_portrait_small	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmall", path.combine(PATH, "Sprites/portraitSmall.png"))
+local sprite_log = Resources.sprite_load(NAMESPACE, "usurperLog", path.combine(PATH, "Sprites/log.png"))
+local sprite_skills = Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 5)
+local sprite_idle = Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine(PATH, "Sprites/idle.png"), 1, 5, 10)
+local sprite_idle_half = Resources.sprite_load(NAMESPACE, "usurperIdleHalf", path.combine(PATH, "Sprites/idleHalf.png"), 1, 5, 10)
+local sprite_walk = Resources.sprite_load(NAMESPACE, "usurperWalk", path.combine(PATH, "Sprites/walk.png"), 8, 15, 18)
+local sprite_walk_half = Resources.sprite_load(NAMESPACE, "usurperWalkHalf", path.combine(PATH, "Sprites/walkHalf.png"), 8, 5, 11)
+local sprite_walk_back = Resources.sprite_load(NAMESPACE, "usurperWalkBack", path.combine(PATH, "Sprites/walkBack.png"), 8, 6, 9)
+local sprite_jump = Resources.sprite_load(NAMESPACE, "usurperJump", path.combine(PATH, "Sprites/jump.png"), 1, 10, 11)
+local sprite_jump_half = Resources.sprite_load(NAMESPACE, "usurperJumpHalf", path.combine(PATH, "Sprites/jumpHalf.png"), 1, 10, 10)
+local sprite_jump_peak = Resources.sprite_load(NAMESPACE, "usurperJumpPeak", path.combine(PATH, "Sprites/jumpPeak.png"), 1, 10, 11)
+local sprite_jump_peak_half	= Resources.sprite_load(NAMESPACE, "usurperJumpPeakHalf", path.combine(PATH, "Sprites/jumpPeakHalf.png"), 1, 10, 10)
+local sprite_fall = Resources.sprite_load(NAMESPACE, "usurperFall", path.combine(PATH, "Sprites/fall.png"), 1, 8, 11)
+local sprite_fall_half = Resources.sprite_load(NAMESPACE, "usurperFallHalf", path.combine(PATH, "Sprites/fallHalf.png"), 1, 8, 10)
+local sprite_climb = Resources.sprite_load(NAMESPACE, "usurperClimb", path.combine(PATH, "Sprites/climb.png"), 6, 10, 14)
+local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combine(PATH, "Sprites/death.png"), 8, 26, 6)
+local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 24)
+local sprite_shoot1 = Resources.sprite_load(NAMESPACE, "usurperShoot1", path.combine(PATH, "Sprites/shoot1.png"), 6, 7, 16)
+local sprite_shoot1_halfa = Resources.sprite_load(NAMESPACE, "usurperShoot1HalfA", path.combine(PATH, "Sprites/shoot1HalfA.png"), 4, 16, 18)
+local sprite_shoot1_halfb = Resources.sprite_load(NAMESPACE, "usurperShoot1HalfB", path.combine(PATH, "Sprites/shoot1HalfB.png"), 4, 15, 17)
+local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
+local sprite_shoot3 = Resources.sprite_load(NAMESPACE, "usurperShoot3", path.combine(PATH, "Sprites/shoot3.png"), 9, 21, 10)
+local sprite_shoot4 = Resources.sprite_load(NAMESPACE, "usurperShoot4", path.combine(PATH, "Sprites/shoot4.png"), 13, 41, 38)
+local sprite_shoot4b = Resources.sprite_load(NAMESPACE, "usurperShoot4B", path.combine(PATH, "Sprites/shoot4b.png"), 13, 41, 38)
+local sprite_shoot5 = Resources.sprite_load(NAMESPACE, "usurperShoot5", path.combine(PATH, "Sprites/shoot5.png"), 14, 41, 55)
+local sprite_shoot5b = Resources.sprite_load(NAMESPACE, "usurperShoot5B", path.combine(PATH, "Sprites/shoot5b.png"), 14, 41, 55)
+local sprite_maelstrom = Resources.sprite_load(NAMESPACE, "usurperMaelstrom", path.combine(PATH, "Sprites/maelstrom.png"), 8, 30, 32)
+local sprite_credits = Resources.sprite_load(NAMESPACE, "usurperCredits", path.combine(PATH, "Sprites/credits.png"), 1, 12, 10)
+local sprite_drone_idle = Resources.sprite_load(NAMESPACE, "usurperDroneIdle", path.combine(PATH, "Sprites/droneIdle.png"), 5, 11, 15)
+local sprite_drone_shoot = Resources.sprite_load(NAMESPACE, "usurperDroneShoot", path.combine(PATH, "Sprites/droneShoot.png"), 5, 25, 15)
+local sprite_pallete = Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
+local sprite_loadout_pallete = Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
+local sound_charge = Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
 
-local objMaelstrom = Object.new(NAMESPACE, "tyrantsSlashMaelstrom")
-objMaelstrom.obj_sprite = sprMaelstrom
+local surp = Survivor.new(NAMESPACE, "usurper")
+local surp_id = surp.value
+
+surp:set_stats_base({
+	maxhp = 115,
+	damage = 12,
+	regen = 0.01,
+})
+surp:set_stats_level({
+	maxhp = 32,
+	damage = 3,
+	regen = 0.002,
+	armor = 2,
+})
+
+surp:set_animations({
+	idle = sprite_idle,
+	walk = sprite_walk,
+	jump = sprite_jump,
+	jump_peak = sprite_jump_peak,
+	fall = sprite_fall,
+	climb = sprite_climb,
+	death = sprite_death,
+	decoy = sprite_decoy,
+})
+
+surp:set_cape_offset(0, -8, 1, -2)
+surp:set_primary_color(Color.from_rgb(110, 37, 52))
+
+surp.sprite_loadout = sprite_loadout
+surp.sprite_portrait = sprite_portrait
+surp.sprite_portrait_small = sprite_portrait_small
+surp.sprite_title = sprite_walk
+surp.sprite_credits = sprite_credits
+surp:clear_callbacks()
+
+local surp_log = Survivor_Log.new(surp, sprite_log, sprite_walk)
+surp_log.stat_regen_base = 0.01
+surp_log.stat_regen_level = 0.002
+
+surp:onInit(function(actor)
+	local idle_half = Array.new()
+	local walk_half = Array.new()
+	local jump_half = Array.new()
+	local jump_peak_half = Array.new()
+	local fall_half = Array.new()
+	idle_half:push(sprite_idle, sprite_idle_half, 0)
+	walk_half:push(sprite_walk, sprite_walk_half, 0, sprite_walk_back)
+	jump_half:push(sprite_jump, sprite_jump_half, 0)
+	jump_peak_half:push(sprite_jump_peak, sprite_jump_peak_half, 0)
+	fall_half:push(sprite_fall, sprite_fall_half, 0)
+
+	actor.sprite_idle_half = idle_half
+	actor.sprite_walk_half = walk_half
+	actor.sprite_jump_half = jump_half
+	actor.sprite_jump_peak_half = jump_peak_half
+	actor.sprite_fall_half = fall_half
+
+	actor:survivor_util_init_half_sprites()
+end)
+
+
+
+local objMaelstrom = Object.new(NAMESPACE, "usurperMaelstrom")
+objMaelstrom.obj_sprite = sprite_maelstrom
 objMaelstrom.obj_depth = 00
 objMaelstrom:clear_callbacks()
 
@@ -67,18 +158,46 @@ objMaelstrom:onStep(function(self)
 	end
 end)
 
-local slash = Skill.new(NAMESPACE, "tyrantsSlash")
-slash:set_skill_icon(sprSkills, 0)
+
+
+-- Gilded Tap
+local tap = surp:get_primary()
+tap:set_skill_icon(sprite_skills, 0)
+tap.cooldown = 0
+tap:clear_callbacks()
+
+
+
+-- Gilded Jacket
+local jacket = surp:get_secondary()
+jacket:set_skill_icon(sprite_skills, 1)
+jacket.cooldown = 3 * 60
+jacket.allow_buffered_input = true
+jacket:clear_callbacks()
+
+
+
+-- Transcendant Dive
+local dive = surp:get_utility()
+dive:set_skill_icon(sprite_skills, 2)
+dive.cooldown = 5 * 60
+dive.allow_buffered_input = true
+dive:clear_callbacks()
+
+
+
+--Tyrant's Slash
+local slash = surp:get_special()
+slash:set_skill_icon(sprite_skills, 3)
 slash.allow_buffered_input = true
 slash.cooldown = 6 * 60
 slash:clear_callbacks()
-Survivor.find("ror", "commando"):add_skill(slash, Skill.SLOT.special)
 
-local stslash = State.new(NAMESPACE, "stateTyrantsSlash")
+local stslash = State.new(NAMESPACE, "usurperStateTyrantsSlash")
 stslash:clear_callbacks()
 
-local slash2 = Skill.new(NAMESPACE, "tyrantsSlashBoosted")
-slash2:set_skill_icon(sprSkills, 1)
+local slash2 = Skill.new(NAMESPACE, "usurperTyrantsSlashBoosted")
+slash2:set_skill_icon(sprite_skills, 4)
 slash2.allow_buffered_input = true
 slash2.cooldown = 6 * 60
 slash:set_skill_upgrade(slash2)
@@ -94,9 +213,9 @@ end)
 
 stslash:onEnter(function(actor, data)
 	if actor:item_stack_count(Item.find("ror", "ancientScepter")) > 0 then
-		actor.sprite_index = sprShoot2
+		actor.sprite_index = sprite_shoot5
 	else
-		actor.sprite_index = sprShoot1
+		actor.sprite_index = sprite_shoot4
 	end
 	
 	actor.image_index = 0
@@ -148,9 +267,9 @@ stslash:onStep(function(actor, data)
 			circle.image_blend = Color.BLACK
 			flash.parent = actor
 			if actor:item_stack_count(Item.find("ror", "ancientScepter")) > 0 then
-				flash.sprite_index = sprShoot2B
+				flash.sprite_index = sprite_shoot5b
 			else
-				flash.sprite_index = sprShoot1B
+				flash.sprite_index = sprite_shoot4b
 			end
 			flash.image_index = actor.image_index
 			flash.depth = actor.depth - 1
@@ -191,7 +310,7 @@ stslash:onStep(function(actor, data)
 				Particle.find("ror", "Spark"):create(actor.x, actor.y + 8, 2, Particle.SYSTEM.middle)
 				actor:screen_shake(1)
 			end
-			actor:sound_play(sndCharge, 1, pitch)
+			actor:sound_play(sound_charge, 1, pitch)
 		end
 	else
 		data.released = 1
