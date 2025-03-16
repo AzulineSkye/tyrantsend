@@ -174,11 +174,11 @@ tap.cooldown = 0
 tap.damage = 0.6
 tap.is_primary = true
 tap.is_utility = false
-tap:clear_callbacks()
 tap.allow_buffered_input = true
 tap.hold_facing_direction = true
 tap.require_key_press = false
 tap.does_change_activity_state = true
+tap:clear_callbacks()
 
 local sttap = State.new(NAMESPACE, "usurperStateGildedTap")
 sttap:clear_callbacks()
@@ -193,10 +193,8 @@ sttap:onEnter(function(actor, data)
 	
 	data.fired = 0
 	if math.random() <= 0.5 then
-		print("hi")
 		actor.sprite_index2 = sprite_shoot1a
 	else
-		print("hello")
 		actor.sprite_index2 = sprite_shoot1b
 	end
 	actor.image_index2 = 0
@@ -252,17 +250,88 @@ local jacket = surp:get_secondary()
 jacket:set_skill_icon(sprite_skills, 1)
 jacket.cooldown = 3 * 60
 jacket.allow_buffered_input = true
+jacket.is_primary = false
+jacket.is_utility = false
+jacket.does_change_activity_state = true
 jacket:clear_callbacks()
+
+local stjacket = State.new(NAMESPACE, "usurperStateGildedJacket")
+stjacket:clear_callbacks()
+
+jacket:onActivate(function(actor)
+	actor:enter_state(stjacket)
+end)
+
+stjacket:onEnter(function(actor, data)
+	actor.sprite_index = sprite_shoot2
+	actor.image_index = 0
+	data.fired = 0
+end)
+
+stjacket:onStep(function(actor, data)
+	actor:skill_util_fix_hspeed()
+	actor:actor_animation_set(actor.sprite_index, 0.25)
+	
+	if actor.image_index >= 0 and data.fired == 0 then
+		if actor:is_authority() then
+			local buff_shadow_clone = Buff.find("ror", "shadowClone")
+			for i=0, actor:buff_stack_count(buff_shadow_clone) do
+				local attack = actor:fire_bullet(actor.x, actor.y, 600, actor:skill_util_facing_direction(), 3, 1, gm.constants.sSparks2, Attack_Info.TRACER.commando2, true)
+				attack.attack_info.climb = i * 8
+				attack.attack_info.gildedjacket = 1
+				attack.attack_info.parent = actor
+				print("hi")
+			end
+		end
+		actor:sound_play(gm.constants.wBullet2, 1, 0.8 + math.random() * 0.2)
+		actor:screen_shake(4)
+		data.fired = 1
+	end
+	
+	actor:skill_util_exit_state_on_anim_end()
+end)
+
+Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hit_info)
+	if hit_info.gildedjacket == 1 then
+		local victim = hit_info.target
+		local actor = hit_info.parent
+		
+		local dropOffStart = actor.x + 40 * actor.image_xscale
+		local dropOffEnd = actor.x + 160 * actor.image_xscale
+		local distance = math.abs(victim.x - actor.x)
+		distance = math.max(distance, 40)
+		distance = math.min(distance, 160)
+		local damage = -1 * ((distance - 40) / 120) + 1.5
+		hit_info.damage = hit_info.damage * damage
+		print(damage)
+		print(hit_info.damage)
+	end
+end)
 
 
 
 -- Transcendant Dive
 local dive = surp:get_utility()
 dive:set_skill_icon(sprite_skills, 2)
-dive.cooldown = 5 * 60
+dive.cooldown = 1 * 60
 dive.allow_buffered_input = true
 dive:clear_callbacks()
 
+local stdive = State.new(NAMESPACE, "usurperStateTranscendantDive")
+stdive:clear_callbacks()
+
+dive:onActivate(function(actor)
+	actor:enter_state(stdive)
+end)
+
+stdive:onEnter(function(actor, data)
+	local dummy = Object.find("ror", "Dummy"):create(actor.x, actor.y)
+	dummy.maxhp = 999999
+end)
+
+stdive:onStep(function(actor, data)
+	actor:skill_util_exit_state_on_anim_end()
+end)
 
 
 --Tyrant's Slash
