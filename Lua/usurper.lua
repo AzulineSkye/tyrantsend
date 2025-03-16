@@ -17,8 +17,8 @@ local sprite_fall_half = Resources.sprite_load(NAMESPACE, "usurperFallHalf", pat
 local sprite_climb = Resources.sprite_load(NAMESPACE, "usurperClimb", path.combine(PATH, "Sprites/climb.png"), 6, 10, 14)
 local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combine(PATH, "Sprites/death.png"), 8, 26, 6)
 local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 24)
-local sprite_shoot1_halfa = Resources.sprite_load(NAMESPACE, "usurperShoot1HalfA", path.combine(PATH, "Sprites/shoot1HalfA.png"), 4, 16, 18)
-local sprite_shoot1_halfb = Resources.sprite_load(NAMESPACE, "usurperShoot1HalfB", path.combine(PATH, "Sprites/shoot1HalfB.png"), 4, 15, 17)
+local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.combine(PATH, "Sprites/shoot1a.png"), 4, 16, 18)
+local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 15, 17)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
 local sprite_shoot3 = Resources.sprite_load(NAMESPACE, "usurperShoot3", path.combine(PATH, "Sprites/shoot3.png"), 9, 21, 10)
 local sprite_shoot4 = Resources.sprite_load(NAMESPACE, "usurperShoot4", path.combine(PATH, "Sprites/shoot4.png"), 13, 41, 38)
@@ -181,24 +181,45 @@ tap:onActivate(function(actor)
 	actor:enter_state(sttap)
 end)
 
-sttap:onActivate(function(actor, data)
+sttap:onEnter(function(actor, data)
 	actor:skill_util_strafe_init()
 	actor:skill_util_strafe_turn_init()
 	
 	data.fired = 0
 	if math.random() <= 0.5 then
-		actor.sprite_index2 = sprite_shoot1_halfa
+		print("hi")
+		actor.sprite_index2 = sprite_shoot1a
 	else
-		actor.sprite_index2 = sprite_shoot1_halfb
+		print("hello")
+		actor.sprite_index2 = sprite_shoot1b
 	end
 	actor.image_index2 = 0
 end)
 
 sttap:onStep(function(actor, data)
-	if actor.image_index2 >= 0 and data.fired = 0 then
-		actor:fire_bullet(actor.x, actor.y, 500, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1, true)
-		data.fired = 0
+	
+	if math.random() <= 0.5 then
+		actor.sprite_index2 = sprite_shoot1a
+	else
+		actor.sprite_index2 = sprite_shoot1b
 	end
+	actor:skill_util_strafe_update(0.2 * actor.attack_speed, 0.5)
+	actor:skill_util_step_strafe_sprites()
+	actor:skill_util_strafe_turn_update()
+	
+	if actor.image_index2 >= 0 and data.fired == 0 then
+		if actor:is_authority() then
+			local buff_shadow_clone = Buff.find("ror", "shadowClone")
+			for i=0, actor:buff_stack_count(buff_shadow_clone) do
+				local attack = actor:fire_bullet(actor.x, actor.y, 1000, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1, true)
+				attack.attack_info.climb = i * 8
+			end
+		end
+		actor:sound_play(gm.constants.wBullet1, 1, 0.8 + math.random() * 0.2)
+		data.fired = 1
+	end
+	
+	actor:skill_util_exit_state_on_anim_end()
 end)
 
 
