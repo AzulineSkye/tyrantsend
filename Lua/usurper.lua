@@ -17,7 +17,6 @@ local sprite_fall_half = Resources.sprite_load(NAMESPACE, "usurperFallHalf", pat
 local sprite_climb = Resources.sprite_load(NAMESPACE, "usurperClimb", path.combine(PATH, "Sprites/climb.png"), 6, 10, 14)
 local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combine(PATH, "Sprites/death.png"), 8, 26, 6)
 local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 24)
-local sprite_shoot1 = Resources.sprite_load(NAMESPACE, "usurperShoot1", path.combine(PATH, "Sprites/shoot1.png"), 6, 7, 16)
 local sprite_shoot1_halfa = Resources.sprite_load(NAMESPACE, "usurperShoot1HalfA", path.combine(PATH, "Sprites/shoot1HalfA.png"), 4, 16, 18)
 local sprite_shoot1_halfb = Resources.sprite_load(NAMESPACE, "usurperShoot1HalfB", path.combine(PATH, "Sprites/shoot1HalfB.png"), 4, 15, 17)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
@@ -36,6 +35,14 @@ local sound_charge = Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine
 
 local surp = Survivor.new(NAMESPACE, "usurper")
 local surp_id = surp.value
+
+local survivororder = List.wrap(Global.survivor_display_list)
+for i, id in ipairs(survivororder) do
+	if id == surp_id then
+		survivororder:delete(i - 1)
+	end
+end
+survivororder:insert(1, surp_id)
 
 surp:set_stats_base({
 	maxhp = 115,
@@ -61,7 +68,7 @@ surp:set_animations({
 })
 
 surp:set_cape_offset(0, -8, 1, -2)
-surp:set_primary_color(Color.from_rgb(110, 37, 52))
+surp:set_primary_color(Color.from_rgb(244, 243, 183))
 
 surp.sprite_loadout = sprite_loadout
 surp.sprite_portrait = sprite_portrait
@@ -165,6 +172,17 @@ local tap = surp:get_primary()
 tap:set_skill_icon(sprite_skills, 0)
 tap.cooldown = 0
 tap:clear_callbacks()
+
+local sttap = State.new(NAMESPACE, "usurperStateGildedTap")
+sttap:clear_callbacks()
+
+tap:onActivate(function(actor)
+	actor:enter_state(sttap)
+end)
+
+sttap:onStep(function(actor, data)
+	
+end)
 
 
 
