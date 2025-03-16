@@ -280,7 +280,6 @@ stjacket:onStep(function(actor, data)
 				attack.attack_info.climb = i * 8
 				attack.attack_info.gildedjacket = 1
 				attack.attack_info.parent = actor
-				print("hi")
 			end
 		end
 		actor:sound_play(gm.constants.wBullet2, 1, 0.8 + math.random() * 0.2)
@@ -292,7 +291,7 @@ stjacket:onStep(function(actor, data)
 end)
 
 Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hit_info)
-	if hit_info.gildedjacket == 1 then
+	if hit_info.gildedjacket == 1 and hit_info.parent:exists() then
 		local victim = hit_info.target
 		local actor = hit_info.parent
 		
@@ -303,8 +302,6 @@ Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hi
 		distance = math.min(distance, 160)
 		local damage = -1 * ((distance - 40) / 120) + 1.5
 		hit_info.damage = hit_info.damage * damage
-		print(damage)
-		print(hit_info.damage)
 	end
 end)
 
