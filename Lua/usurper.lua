@@ -171,6 +171,7 @@ end)
 local tap = surp:get_primary()
 tap:set_skill_icon(sprite_skills, 0)
 tap.cooldown = 0
+tap.damage = 0.6
 tap:clear_callbacks()
 
 local sttap = State.new(NAMESPACE, "usurperStateGildedTap")
@@ -180,8 +181,24 @@ tap:onActivate(function(actor)
 	actor:enter_state(sttap)
 end)
 
-sttap:onStep(function(actor, data)
+sttap:onActivate(function(actor, data)
+	actor:skill_util_strafe_init()
+	actor:skill_util_strafe_turn_init()
 	
+	data.fired = 0
+	if math.random() <= 0.5 then
+		actor.sprite_index2 = sprite_shoot1_halfa
+	else
+		actor.sprite_index2 = sprite_shoot1_halfb
+	end
+	actor.image_index2 = 0
+end)
+
+sttap:onStep(function(actor, data)
+	if actor.image_index2 >= 0 and data.fired = 0 then
+		actor:fire_bullet(actor.x, actor.y, 500, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1, true)
+		data.fired = 0
+	end
 end)
 
 
