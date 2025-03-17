@@ -21,6 +21,9 @@ local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.c
 local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 15, 16)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
 local sprite_shoot3 = Resources.sprite_load(NAMESPACE, "usurperShoot3", path.combine(PATH, "Sprites/shoot3.png"), 9, 21, 10)
+local sprite_shoot3_trail = Resources.sprite_load(NAMESPACE, "usurperShoot3Trail", path.combine(PATH, "Sprites/shoot3Trail.png"), 9, 21, 10)
+local sprite_shoot3_parry = Resources.sprite_load(NAMESPACE, "usurperShoot3Parry", path.combine(PATH, "Sprites/shoot3Parry.png"), 5, 15, 10)
+local sprite_counter = Resources.sprite_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.png"), 13, 41, 38)
 local sprite_shoot4 = Resources.sprite_load(NAMESPACE, "usurperShoot4", path.combine(PATH, "Sprites/shoot4.png"), 13, 41, 38)
 local sprite_shoot4b = Resources.sprite_load(NAMESPACE, "usurperShoot4B", path.combine(PATH, "Sprites/shoot4b.png"), 13, 41, 38)
 local sprite_shoot5 = Resources.sprite_load(NAMESPACE, "usurperShoot5", path.combine(PATH, "Sprites/shoot5.png"), 14, 41, 55)
@@ -32,17 +35,19 @@ local sprite_drone_shoot = Resources.sprite_load(NAMESPACE, "usurperDroneShoot",
 local sprite_pallete = Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
 local sprite_loadout_pallete = Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
 local sound_charge = Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
+local sound_counter = Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
 
 local surp = Survivor.new(NAMESPACE, "usurper")
 local surp_id = surp.value
 
+-- sets usurpers position after commando
 local survivororder = List.wrap(Global.survivor_display_list)
 for i, id in ipairs(survivororder) do
 	if id == surp_id then
 		survivororder:delete(i - 1)
 	end
 end
-survivororder:insert(1, surp_id)
+survivororder:insert(1, surp_id) -- the 1 here the position in the character list. 1 is after commando, 2 is after huntress and so on
 
 surp:set_stats_base({
 	maxhp = 115,
@@ -98,15 +103,31 @@ surp:onInit(function(actor)
 	actor.sprite_jump_half = jump_half
 	actor.sprite_jump_peak_half = jump_peak_half
 	actor.sprite_fall_half = fall_half
+	
+	actor:get_data().counter = 0
 
 	actor:survivor_util_init_half_sprites()
+end)
+
+surp:onStep(function(actor)
+	if actor:get_data().counter > 0 then
+		actor:freeze_active_skill(Skill.SLOT.utility)
+		if actor.invincible == 0 then
+			actor.invincible = 1
+		end
+		actor:get_data().counter = actor:get_data().counter - 1
+	end
+	if actor:get_data().counter % 8 == 0 and actor:get_data().counter <= 120 then
+		--Particle.find("ror", "Assassin"):create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+		--Particle.find("ror", "PixelDust"):create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+	end
 end)
 
 
 
 local objMaelstrom = Object.new(NAMESPACE, "usurperMaelstrom")
 objMaelstrom.obj_sprite = sprite_maelstrom
-objMaelstrom.obj_depth = 00
+objMaelstrom.obj_depth = 0
 objMaelstrom:clear_callbacks()
 
 objMaelstrom:onCreate(function(self)
@@ -161,6 +182,41 @@ objMaelstrom:onStep(function(self)
 	end
 	
 	if data.timer <= 0 and self.image_alpha <= 0 then
+		self:destroy()
+	end
+end)
+
+local objUmbra = Object.new(NAMESPACE, "usurperUmbra")
+objUmbra.obj_sprite = sprite_counter
+objUmbra.obj_depth = 0
+objUmbra:clear_callbacks()
+
+objUmbra:onCreate(function(self)
+	local data = self:get_data()
+	self.image_speed = 0.25
+	self.parent = -4
+	self.image_xscale = 1
+	data.fired = 0
+	data.spawned = 0
+end)
+
+objUmbra:onStep(function(self)
+	local data = self:get_data()
+		
+	if self.image_index >= 1 and data.spawned == 0 then
+		self:sound_play(gm.constants.wBoarExplosion, 1, 1.4 + math.random() * 0.3)
+		data.spawned = 1
+	end
+	if self.image_index >= 5 and data.fired == 0 then
+		self:sound_play(sound_counter, 1, 1.6 + math.random() * 0.3)
+		local attack = self.parent:fire_explosion(self.x, self.y, 121, 30, 3 + 6 * (1 - self.parent.hp / self.parent.maxhp), nil, gm.constants.sSparks7)
+		attack.attack_info:set_stun(0.4, self.parent.image_xscale, Attack_Info.KNOCKBACK_KIND.standart)
+		attack.attack_info.knockup = 2
+		self:screen_shake(2)
+		data.fired = 1
+	end
+
+	if self.image_index >= 12 then
 		self:destroy()
 	end
 end)
@@ -295,13 +351,11 @@ Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hi
 		local victim = hit_info.target
 		local actor = hit_info.parent
 		
-		local dropOffStart = actor.x + 40 * actor.image_xscale
-		local dropOffEnd = actor.x + 160 * actor.image_xscale
 		local distance = math.abs(victim.x - actor.x)
 		distance = math.max(distance, 40)
 		distance = math.min(distance, 160)
-		local damage = -1 * ((distance - 40) / 120) + 1.5
-		hit_info.damage = hit_info.damage * damage
+		local multiplier = -1 * ((distance - 40) / 120) + 1.5
+		hit_info.damage = hit_info.damage * multiplier
 	end
 end)
 
@@ -310,11 +364,17 @@ end)
 -- Transcendant Dive
 local dive = surp:get_utility()
 dive:set_skill_icon(sprite_skills, 2)
-dive.cooldown = 1 * 60
+dive.cooldown = 5 * 60
 dive.allow_buffered_input = true
+dive.is_primary = false
+dive.is_utility = true
+dive.does_change_activity_state = true
+dive.override_strafe_direction = true
+dive.ignore_aim_direction = true
 dive:clear_callbacks()
 
 local stdive = State.new(NAMESPACE, "usurperStateTranscendantDive")
+stdive.activity_flags = State.ACTIVITY_FLAG.allow_rope_cancel
 stdive:clear_callbacks()
 
 dive:onActivate(function(actor)
@@ -322,12 +382,54 @@ dive:onActivate(function(actor)
 end)
 
 stdive:onEnter(function(actor, data)
-	local dummy = Object.find("ror", "Dummy"):create(actor.x, actor.y)
-	dummy.maxhp = 999999
+	if gm.bool(actor.ropeDown) then
+		data.parry = 1
+	else
+		data.parry = 0
+	end
+	actor.image_index = 0
+	data.fired = 0
 end)
 
 stdive:onStep(function(actor, data)
+	actor:get_data().counter = 120
+	
+	if data.parry == 0 then
+		actor:actor_animation_set(sprite_shoot3, 0.25, false)
+		
+		actor.pHspeed = 2.2 * actor.pHmax * actor.image_xscale
+	
+		local trail =  GM.instance_create(actor.x, actor.y, gm.constants.oEfTrail)
+		trail.sprite_index = sprite_shoot3_trail
+		trail.image_index = actor.image_index - 1
+		trail.image_xscale = actor.image_xscale
+	
+		if data.fired == 0 then
+			actor:sound_play(gm.constants.wCommandoRoll, 1, 1 + math.random() * 0.2)
+			data.fired = 1
+		end
+	else
+		actor:actor_animation_set(sprite_shoot3_parry, 0.2, false)
+		
+		if data.fired == 0 then
+			actor:sound_play(gm.constants.wMercenary_Parry_Ready, 1, 0.8 + math.random() * 0.2)
+			data.fired = 1
+		end
+	end
+	
 	actor:skill_util_exit_state_on_anim_end()
+end)
+
+Callback.add(Callback.TYPE.onDamageBlocked, "usurperTranscendantDiveSpawnUmbra", function(actor, attacker, hit_info)
+	if actor.object_index == gm.constants.oP and actor:get_data().counter > 0 then
+		actor.invincible = 60
+		local umbra = objUmbra:create(actor.x, actor.y)
+		umbra.parent = actor
+		umbra.image_xscale = actor.image_xscale
+		local circle = GM.instance_create(actor.x, actor.y, gm.constants.oEfCircle)
+		circle.radius = 10
+		circle.image_blend = Color.BLACK
+	end
 end)
 
 

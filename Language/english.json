@@ -18,11 +18,11 @@
 		},
 	"usurperX": {
 			"name": "Gilded Jacket",
-			"description": "Shoot through enemies for <y>up to 450% damage</c>, <b>dealing more damage to closer enemies</c>, <y>knocking them back</c>."
+			"description": "Shoot through enemies for <y>up to 450% damage</c>, <b>dealing more damage to closer enemies</c>."
 		},
 	"usurperC": {
 			"name": "Transcendant Dive",
-			"description": "Roll forwards, summoning an <b>Umbra</c> that <b>counterattacks</c> for <y>300% damage</c> plus <r>a portion of your missing health</c>."
+			"description": "Roll forwards, summoning an <b>Umbra</c> that <b>counterattacks</c> for <y>300% damage</c> plus <r>a portion of your missing health</c>.\n<b>Hold down to do a stationary counterattack instead.</c>"
 		},
 	"usurperV": {
 			"name": "Tyrant's Slash",
