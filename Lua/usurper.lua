@@ -7,7 +7,7 @@ local sprite_idle = Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine
 local sprite_idle_half = Resources.sprite_load(NAMESPACE, "usurperIdleHalf", path.combine(PATH, "Sprites/idleHalf.png"), 1, 5, 10)
 local sprite_walk = Resources.sprite_load(NAMESPACE, "usurperWalk", path.combine(PATH, "Sprites/walk.png"), 8, 15, 18)
 local sprite_walk_half = Resources.sprite_load(NAMESPACE, "usurperWalkHalf", path.combine(PATH, "Sprites/walkHalf.png"), 8, 5, 11)
-local sprite_walk_back = Resources.sprite_load(NAMESPACE, "usurperWalkBack", path.combine(PATH, "Sprites/walkBack.png"), 8, 6, 9)
+local sprite_walk_back = Resources.sprite_load(NAMESPACE, "usurperWalkBack", path.combine(PATH, "Sprites/walkBack.png"), 8, 7, 9)
 local sprite_jump = Resources.sprite_load(NAMESPACE, "usurperJump", path.combine(PATH, "Sprites/jump.png"), 1, 10, 11)
 local sprite_jump_half = Resources.sprite_load(NAMESPACE, "usurperJumpHalf", path.combine(PATH, "Sprites/jumpHalf.png"), 1, 10, 10)
 local sprite_jump_peak = Resources.sprite_load(NAMESPACE, "usurperJumpPeak", path.combine(PATH, "Sprites/jumpPeak.png"), 1, 10, 11)
@@ -109,6 +109,18 @@ surp:onInit(function(actor)
 	actor:survivor_util_init_half_sprites()
 end)
 
+
+
+local assassin = Particle.new(NAMESPACE, "usurperAssassin")
+assassin:set_shape(Particle.SHAPE.square)
+assassin:set_color_hsv(0, 0, 0, 0, 0, 255)
+assassin:set_alpha2(1, 0)
+assassin:set_life(60, 60)
+assassin:set_scale(0.25, 0.25)
+assassin:set_size(1, 1, -0.016, 0)
+
+
+
 surp:onStep(function(actor)
 	if actor:get_data().counter > 0 then
 		actor:freeze_active_skill(Skill.SLOT.utility)
@@ -117,9 +129,9 @@ surp:onStep(function(actor)
 		end
 		actor:get_data().counter = actor:get_data().counter - 1
 	end
-	if actor:get_data().counter % 8 == 0 and actor:get_data().counter <= 120 then
-		--Particle.find("ror", "Assassin"):create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
-		--Particle.find("ror", "PixelDust"):create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+	if actor:get_data().counter % 8 == 0 and actor:get_data().counter > 0 then
+		assassin:create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+		Particle.find("ror", "PixelDust"):create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
 	end
 end)
 
