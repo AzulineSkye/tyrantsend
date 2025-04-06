@@ -2,7 +2,7 @@ local sprite_loadout = Resources.sprite_load(NAMESPACE, "usurperSelect", path.co
 local sprite_portrait = Resources.sprite_load(NAMESPACE, "usurperPortrait", path.combine(PATH, "Sprites/portrait.png"), 3)
 local sprite_portrait_small	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmall", path.combine(PATH, "Sprites/portraitSmall.png"))
 local sprite_log = Resources.sprite_load(NAMESPACE, "usurperLog", path.combine(PATH, "Sprites/log.png"))
-local sprite_skills = Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 5)
+local sprite_skills = Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 6)
 local sprite_idle = Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine(PATH, "Sprites/idle.png"), 1, 5, 10)
 local sprite_idle_half = Resources.sprite_load(NAMESPACE, "usurperIdleHalf", path.combine(PATH, "Sprites/idleHalf.png"), 1, 5, 10)
 local sprite_walk = Resources.sprite_load(NAMESPACE, "usurperWalk", path.combine(PATH, "Sprites/walk.png"), 8, 15, 18)
@@ -16,7 +16,7 @@ local sprite_fall = Resources.sprite_load(NAMESPACE, "usurperFall", path.combine
 local sprite_fall_half = Resources.sprite_load(NAMESPACE, "usurperFallHalf", path.combine(PATH, "Sprites/fallHalf.png"), 1, 8, 10)
 local sprite_climb = Resources.sprite_load(NAMESPACE, "usurperClimb", path.combine(PATH, "Sprites/climb.png"), 6, 10, 14)
 local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combine(PATH, "Sprites/death.png"), 8, 26, 6)
-local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 24)
+local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 18)
 local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.combine(PATH, "Sprites/shoot1a.png"), 4, 16, 17)
 local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 15, 16)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
@@ -32,8 +32,9 @@ local sprite_maelstrom = Resources.sprite_load(NAMESPACE, "usurperMaelstrom", pa
 local sprite_credits = Resources.sprite_load(NAMESPACE, "usurperCredits", path.combine(PATH, "Sprites/credits.png"), 1, 12, 10)
 local sprite_drone_idle = Resources.sprite_load(NAMESPACE, "usurperDroneIdle", path.combine(PATH, "Sprites/droneIdle.png"), 5, 11, 15)
 local sprite_drone_shoot = Resources.sprite_load(NAMESPACE, "usurperDroneShoot", path.combine(PATH, "Sprites/droneShoot.png"), 5, 25, 15)
-local sprite_pallete = Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
-local sprite_loadout_pallete = Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
+local sprite_palette = Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
+local sprite_loadout_palette = Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
+local sprite_void = Resources.sprite_load(NAMESPACE, "usurperVoid", path.combine(PATH, "Sprites/void.png"), 5, 4, 4)
 local sound_charge = Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
 local sound_counter = Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
 
@@ -72,6 +73,14 @@ surp:set_animations({
 	decoy = sprite_decoy,
 })
 
+surp:set_palettes(sprite_palette, sprite_pallete, sprite_pallete)
+surp:add_skin("Malice", 1, sprite_loadout, sprite_portrait, sprite_portrait_small)
+surp:add_skin("Arctic", 2, sprite_loadout, sprite_portrait, sprite_portrait_small)
+surp:add_skin("Android", 3, sprite_loadout, sprite_portrait, sprite_portrait_small)
+surp:add_skin("Arid", 4, sprite_loadout, sprite_portrait, sprite_portrait_small)
+surp:add_skin("Replika", 5, sprite_loadout, sprite_portrait, sprite_portrait_small)
+surp:add_skin("Hemorrhage", 6, sprite_loadout, sprite_portrait, sprite_portrait_small)
+
 surp:set_cape_offset(0, -8, 1, -2)
 surp:set_primary_color(Color.from_rgb(244, 243, 183))
 
@@ -79,12 +88,20 @@ surp.sprite_loadout = sprite_loadout
 surp.sprite_portrait = sprite_portrait
 surp.sprite_portrait_small = sprite_portrait_small
 surp.sprite_title = sprite_walk
+surp.sprite_idle = sprite_idle
 surp.sprite_credits = sprite_credits
 surp:clear_callbacks()
 
 local surp_log = Survivor_Log.new(surp, sprite_log, sprite_walk)
-surp_log.stat_regen_base = 0.01
-surp_log.stat_regen_level = 0.002
+
+-- sets usurpers log position after commando
+local survivorlogorder = List.wrap(Global.survivor_log_display_list)
+for i, id in ipairs(survivorlogorder) do
+	if id == surp_log.value then
+		survivorlogorder:delete(i - 1)
+	end
+end
+survivorlogorder:insert(1, surp_log.value)
 
 surp:onInit(function(actor)
 	local idle_half = Array.new()
@@ -105,6 +122,8 @@ surp:onInit(function(actor)
 	actor.sprite_fall_half = fall_half
 	
 	actor:get_data().counter = 0
+	actor:get_data().clone = 0
+	actor:get_data().clone2 = 0
 
 	actor:survivor_util_init_half_sprites()
 end)
@@ -112,13 +131,14 @@ end)
 
 
 local assassin = Particle.new(NAMESPACE, "usurperAssassin")
-assassin:set_shape(Particle.SHAPE.square)
-assassin:set_color_hsv(0, 0, 0, 0, 0, 255)
-assassin:set_alpha2(1, 0)
-assassin:set_life(60, 60)
-assassin:set_scale(0.25, 0.25)
-assassin:set_size(1, 1, -0.016, 0)
+assassin:set_sprite(sprite_void, true, true, false)
+assassin:set_life(60, 90)
+assassin:set_gravity(0.1, 90)
 
+local trail = Particle.new(NAMESPACE, "usurperTrail")
+trail:set_sprite(sprite_void, true, true, false)
+trail:set_alpha2(1, 0)
+trail:set_life(16, 16)
 
 
 surp:onStep(function(actor)
@@ -128,10 +148,19 @@ surp:onStep(function(actor)
 			actor.invincible = 1
 		end
 		actor:get_data().counter = actor:get_data().counter - 1
+		local trail =  GM.instance_create(actor.x, actor.y, gm.constants.oEfTrail)
+		trail.sprite_index = actor.sprite_index
+		trail.image_index = actor.image_index - 1
+		trail.image_xscale = actor.image_xscale
+		trail.image_blend = Color.BLACK
 	end
 	if actor:get_data().counter % 8 == 0 and actor:get_data().counter > 0 then
 		assassin:create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
 		Particle.find("ror", "PixelDust"):create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+	end
+	if actor:get_data().clone > 0 then
+		actor:get_data().clone = actor:get_data().clone - 1
+		actor:get_data().clone2 = actor:get_data().clone2 - 1
 	end
 end)
 
@@ -233,6 +262,100 @@ objUmbra:onStep(function(self)
 	end
 end)
 
+local objClone = Object.new(NAMESPACE, "usurperClone")
+objClone:clear_callbacks()
+
+objClone:onCreate(function(self)
+	local data = self:get_data()
+	self.parent = -4
+	
+end)
+
+objClone:onStep(function(self)
+	local data = self:get_data()
+	local actor = self.parent
+	local pos = self.x + (self.x - actor.x)
+	
+	if actor ~= nil and actor:get_data().clone > 0 and actor:get_data().clone % 2 == 0 then
+		local flash = GM.instance_create(pos, actor.y, gm.constants.oEfTrail)
+		flash.parent = actor
+		flash.sprite_index = actor.sprite_index
+		flash.image_index = actor.image_index
+		flash.depth = actor.depth
+		flash.image_xscale = -actor.image_xscale
+		flash.image_yscale = actor.image_yscale
+		flash.image_blend = Color.BLACK
+		
+		if actor:get_data().clone2 > 0 then
+			local flash2 = GM.instance_create(pos, actor.y, gm.constants.oEfTrail)
+			flash2.parent = actor
+			flash2.sprite_index = actor.sprite_index2
+			flash2.image_index = actor.image_index2
+			flash2.depth = actor.depth
+			flash2.image_xscale = -actor.image_xscale
+			flash2.image_yscale = actor.image_yscale
+			flash2.image_blend = Color.BLACK
+		end
+		
+		if actor:get_data().clone % 8 == 0 then
+			assassin:create(pos + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+			Particle.find("ror", "PixelDust"):create(pos + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
+		end
+	end
+	
+	if actor:get_data().clone <= 0 then
+		self:destroy()
+	end
+end)
+
+local objCloneReturn = Object.new(NAMESPACE, "usurperCloneReturn")
+objCloneReturn:clear_callbacks()
+
+objCloneReturn:onCreate(function(self)
+	self.sprite_index = sprite_void
+	self.image_index = 0
+	self.image_speed = 0
+	self.speed = math.random(6, 9)
+	self.direction = math.random(0, 360)
+	self.parent = -4
+	self:get_data().returntimer = 30
+end)
+
+objCloneReturn:onStep(function(self)
+	trail:set_orientation(self.direction, self.direction, 0, 0, false)
+	trail:set_scale(math.max(1, self.speed / 2), 1)
+	trail:create(self.x, self.y, 1, Particle.SYSTEM.middle)
+	
+	if self:get_data().returntimer > 0 then
+		self:get_data().returntimer = self:get_data().returntimer - 1
+		self.speed = self.speed * 0.9
+	else
+		self.direction = gm.point_direction(self.x, self.y, self.parent.x, self.parent.y)
+		self.speed = math.min(20, self.speed + 0.2)
+		if self:is_colliding(self.parent) then
+			local flash = GM.instance_create(self.parent.x, self.parent.y, gm.constants.oEfFlash)
+			flash.parent = self.parent
+			flash.rate = 0.1
+			flash.image_alpha = 0.5
+			flash.image_blend = Color.BLACK
+			self:destroy()
+		end
+	end
+end)
+
+objClone:onDestroy(function(self)
+	local pos = self.x + (self.x - self.parent.x)
+	for i=0, 5 do
+		local cloneReturn = objCloneReturn:create(pos, self.parent.y)
+		cloneReturn.parent = self.parent
+	end
+	local circle = GM.instance_create(pos, self.parent.y, gm.constants.oEfCircle)
+	circle.parent = self.parent
+	circle.radius = 2
+	circle.image_blend = Color.BLACK
+	self:sound_play(gm.constants.wJarSouls, 1, 1.4 + math.random() * 0.2, pos, self.parent.y)
+	self:sound_play(gm.constants.wWurmDeath, 0.5, 0.8 + math.random() * 0.2, pos, self.parent.y)
+end)
 
 
 -- Gilded Tap
@@ -273,6 +396,8 @@ sttap:onStep(function(actor, data)
 	actor:skill_util_step_strafe_sprites()
 	actor:skill_util_strafe_turn_update()
 	
+	actor:get_data().clone2 = 2
+	
 	if actor.sprite_index == actor.sprite_walk_half[2] then
 		local walk_offset = 0
 		local leg_frame = math.floor(actor.image_index)
@@ -287,13 +412,46 @@ sttap:onStep(function(actor, data)
 	end
 	
 	if actor.image_index2 >= 0 and data.fired == 0 then
+		actor.z_count = actor.z_count + 1
+		
 		if actor:is_authority() then
+			local heaven_cracker_count = actor:item_stack_count(Item.find("ror", "heavenCracker"))
+			local cracker_shot = false
+
+			if heaven_cracker_count > 0 and actor.z_count >= 5 - heaven_cracker_count then
+				cracker_shot = true
+				actor.z_count = 0
+			end
+			
 			local buff_shadow_clone = Buff.find("ror", "shadowClone")
 			for i=0, actor:buff_stack_count(buff_shadow_clone) do
-				local attack = actor:fire_bullet(actor.x, actor.y, 1400, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1, true)
-				attack.attack_info.climb = i * 8
+				if cracker_shot then
+					local attack = actor:fire_bullet(actor.x, actor.y, 700, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
+					attack.attack_info.climb = i * 8
+				else
+					local attack = actor:fire_bullet(actor.x, actor.y, 1400, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1)
+					attack.attack_info.climb = i * 8
+				end
+			end
+			
+			-- alt shift tap
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					for i=0, actor:buff_stack_count(buff_shadow_clone) do
+						if cracker_shot then
+							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(tap), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
+							attack.attack_info.climb = 8 + i * 8
+						else
+							local attack = actor:fire_bullet(pos, actor.y, 1400, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1)
+							attack.attack_info.climb = 8 + i * 8
+						end
+					end
+					shadow:sound_play(gm.constants.wBoss1Shoot1, 0.6, 1.8 + math.random() * 0.4)
+				end
 			end
 		end
+		
 		actor:sound_play(gm.constants.wBullet1, 1, 0.8 + math.random() * 0.2)
 		data.fired = 1
 	end
@@ -303,6 +461,7 @@ end)
 
 sttap:onExit(function(actor, data)
 	actor:skill_util_strafe_exit()
+	actor:get_data().clone2 = 0
 end)
 
 sttap:onGetInterruptPriority(function(actor, data)
@@ -349,7 +508,22 @@ stjacket:onStep(function(actor, data)
 				attack.attack_info.gildedjacket = 1
 				attack.attack_info.parent = actor
 			end
+			
+			-- alt shift jacket
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					for i=0, actor:buff_stack_count(buff_shadow_clone) do
+						local attack = actor:fire_bullet(pos, actor.y, 600, actor:skill_util_facing_direction() + 180, 3, 1, gm.constants.sSparks2, Attack_Info.TRACER.commando2, true)
+						attack.attack_info.climb = 8 + i * 8
+						attack.attack_info.gildedjacket = 2
+						attack.attack_info.parent = actor
+					end
+					shadow:sound_play(gm.constants.wBoss1PhantomSlash, 1.2, 0.8 + math.random() * 0.4)
+				end
+			end
 		end
+		
 		actor:sound_play(gm.constants.wBullet2, 1, 0.8 + math.random() * 0.2)
 		actor:screen_shake(4)
 		data.fired = 1
@@ -368,6 +542,19 @@ Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hi
 		distance = math.min(distance, 160)
 		local multiplier = -1 * ((distance - 40) / 120) + 1.5
 		hit_info.damage = hit_info.damage * multiplier
+	elseif hit_info.gildedjacket == 2 and hit_info.parent:exists() then
+		local victim = hit_info.target
+		local actor = hit_info.parent
+		for _, shadow in ipairs(Instance.find_all(objClone)) do
+			if shadow.parent.value == actor.value then
+				local pos = shadow.x + (shadow.x - actor.x)
+				local distance = math.abs(victim.x - pos)
+				distance = math.max(distance, 40)
+				distance = math.min(distance, 160)
+				local multiplier = -1 * ((distance - 40) / 120) + 1.5
+				hit_info.damage = hit_info.damage * multiplier
+			end
+		end
 	end
 end)
 
@@ -421,6 +608,7 @@ stdive:onStep(function(actor, data)
 			data.fired = 1
 		end
 	else
+		actor:skill_util_fix_hspeed()
 		actor:actor_animation_set(sprite_shoot3_parry, 0.2, false)
 		
 		if data.fired == 0 then
@@ -445,6 +633,40 @@ Callback.add(Callback.TYPE.onDamageBlocked, "usurperTranscendantDiveSpawnUmbra",
 end)
 
 
+-- Doppelganger
+local clone = Skill.new(NAMESPACE, "usurperC_alt")
+surp:add_utility(clone)
+clone:set_skill_icon(sprite_skills, 5)
+clone.cooldown = 14 * 60
+clone.allow_buffered_input = true
+clone.is_primary = false
+clone.is_utility = true
+clone.does_change_activity_state = false
+clone.override_strafe_direction = false
+clone.ignore_aim_direction = true
+clone.require_key_press = true
+clone:clear_callbacks()
+
+clone:onActivate(function(actor)
+	local circle = GM.instance_create(actor.x, actor.y, gm.constants.oEfCircle)
+	circle.parent = actor
+	circle.radius = 2
+	circle.image_blend = Color.BLACK
+	actor:sound_play(gm.constants.wJarSouls, 1, 0.8 + math.random() * 0.2)
+	actor:sound_play(gm.constants.wScarf, 1, 0.6 + math.random() * 0.2)
+	actor:sound_play(gm.constants.wImpPortal1, 1, 0.6 + math.random() * 0.2)
+	actor:screen_shake(4)
+	actor:get_data().clone = 6 * 60
+	for _, shadow in ipairs(Instance.find_all(objClone)) do
+		if shadow.parent.value == actor.value then
+			shadow:destroy()
+		end
+	end
+	local inst = objClone:create(actor.x, actor.y)
+	inst.parent = actor
+end)
+
+
 --Tyrant's Slash
 local slash = surp:get_special()
 slash:set_skill_icon(sprite_skills, 3)
@@ -455,7 +677,7 @@ slash:clear_callbacks()
 local stslash = State.new(NAMESPACE, "usurperStateTyrantsSlash")
 stslash:clear_callbacks()
 
-local slash2 = Skill.new(NAMESPACE, "usurperTyrantsSlashBoosted")
+local slash2 = Skill.new(NAMESPACE, "usurperVboosted")
 slash2:set_skill_icon(sprite_skills, 4)
 slash2.allow_buffered_input = true
 slash2.cooldown = 6 * 60
@@ -570,6 +792,57 @@ stslash:onStep(function(actor, data)
 				actor:screen_shake(1)
 			end
 			actor:sound_play(sound_charge, 1, pitch)
+			
+			-- alt shift slash charging
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					local circle = GM.instance_create(pos, actor.y, gm.constants.oEfCircle)
+					local flash = GM.instance_create(pos, actor.y, gm.constants.oEfTrail)
+					circle.parent = actor
+					circle.radius = 2
+					circle.image_blend = Color.BLACK
+					flash.parent = actor
+					if actor:item_stack_count(Item.find("ror", "ancientScepter")) > 0 then
+						flash.sprite_index = sprite_shoot5b
+					else
+						flash.sprite_index = sprite_shoot4b
+					end
+					flash.image_index = actor.image_index
+					flash.depth = actor.depth - 1
+					flash.image_xscale = -actor.image_xscale
+					flash.image_yscale = actor.image_yscale
+					flash.image_blend = Color.BLACK
+					
+					local pitch = 0.6
+					local misceffects = 1
+					
+					if data.tier == 1 then
+						circle.radius = 4
+						flash.image_xscale = -actor.image_xscale * 1.25
+						flash.image_yscale = actor.image_yscale * 1.25
+						pitch = 0.6 + math.random() * 0.3
+						misceffects = 0
+					elseif data.tier == 2 then
+						circle.radius = 8
+						flash.image_xscale = -actor.image_xscale * 1.5
+						flash.image_yscale = actor.image_yscale * 1.5
+						pitch = 0.8 + math.random() * 0.3
+						misceffects = 0
+					elseif data.tier == 3 then
+						circle.radius = 12
+						flash.image_xscale = -actor.image_xscale * 2
+						flash.image_yscale = actor.image_yscale * 2
+						pitch = 1 + math.random() * 0.3
+						misceffects = 1
+					end
+			
+					if misceffects == 1 then
+						Particle.find("ror", "Spark"):create(pos, actor.y + 8, 2, Particle.SYSTEM.middle)
+					end
+					shadow:sound_play(gm.constants.wBoss1SwingBigStart, 1, pitch)
+				end
+			end
 		end
 	else
 		data.released = 1
@@ -577,12 +850,26 @@ stslash:onStep(function(actor, data)
 	
 	if actor.image_index >= 1 and data.spawned == 0 then
 		actor:sound_play(gm.constants.wMercenary_EviscerateWhiff, 1, 1.2 + math.random() * 0.3)
+		-- alt shift slash spawn sound
+		for _, shadow in ipairs(Instance.find_all(objClone)) do
+			if shadow.parent.value == actor.value then
+				local pos = shadow.x + (shadow.x - actor.x)
+				shadow:sound_play(gm.constants.wBoss1Warp1, 1, 0.8 + math.random() * 0.2)
+			end
+		end
 		data.spawned = 1
 	end
 	
 	if actor.image_index >= 7 then
 		if data.slashed == 0 then
 			actor:sound_play(gm.constants.wMercenaryShoot1_2, 1, 1.1 + math.random() * 0.3)
+			-- alt shift slash sound
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					shadow:sound_play(gm.constants.wBoss1PhantomStab, 0.6, 0.8 + math.random() * 0.2)
+				end
+			end
 			data.slashed = 1
 		end
 	end
@@ -605,6 +892,20 @@ stslash:onStep(function(actor, data)
 			bullet.team = actor.team
 			bullet.speed = 7
 			bullet.tier = data.tier
+			
+			-- alt shift slash maelstrom
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					local bullet = objMaelstrom:create(pos, actor.y)
+					bullet.parent = actor
+					bullet.image_xscale = -actor.image_xscale
+					bullet.direction = actor:skill_util_facing_direction() + 180
+					bullet.team = actor.team
+					bullet.speed = 7
+					bullet.tier = data.tier
+				end
+			end
 		end
 			
 		if data.tier > 2 then
@@ -622,10 +923,32 @@ stslash:onStep(function(actor, data)
 				attack.attack_info.knockup = 3
 				attack.max_hit_number = 5
 			end
+			
+			-- alt shift slash
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					for i=0, actor:buff_stack_count(Buff.find("ror", "shadowClone")) do
+						local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y - 8, 104, 48, math.max(5, 5 * 1.25 * data.tier), nil, gm.constants.sSparks7)
+						attack.attack_info:set_stun(1.5, -actor.image_xscale, Attack_Info.KNOCKBACK_KIND.standart)
+						attack.attack_info.climb = 8 + i * 8
+						attack.attack_info.knockup = 3
+						attack.max_hit_number = 5
+					end
+				end
+			end
 		end
 		
 		Particle.find("ror", "Spark"):create(actor.x + 54 * actor.image_xscale, actor.y + 10, math.max(3, 3 * data.tier), Particle.SYSTEM.middle)
 		Particle.find("ror", "Rubble2"):create(actor.x + 54 * actor.image_xscale, actor.y + 10, math.max(2, 2 * data.tier), Particle.SYSTEM.middle)
+		-- alt shift slash particles
+			for _, shadow in ipairs(Instance.find_all(objClone)) do
+				if shadow.parent.value == actor.value then
+					local pos = shadow.x + (shadow.x - actor.x)
+					Particle.find("ror", "Spark"):create(pos + 54 * -actor.image_xscale, actor.y + 10, math.max(3, 3 * data.tier), Particle.SYSTEM.middle)
+					Particle.find("ror", "Rubble2"):create(pos + 54 * -actor.image_xscale, actor.y + 10, math.max(2, 2 * data.tier), Particle.SYSTEM.middle)
+				end
+			end
 		data.fired = 1
 	end
 	
