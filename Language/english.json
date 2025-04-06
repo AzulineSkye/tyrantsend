@@ -13,6 +13,10 @@
 			"name": "Gilded Tap",
 			"description": "Shoot rapidly for <y>60% damage</c>."
 		},
+	"usurperZ_alt": {
+			"name": "Umbral Blade",
+			"description": "Swing an apropriated blade for <y>160% damage</c>.\n<b>Your swings are imbued with Umbral energy after using a Utility skill.</c>"
+		},
 	"usurperX": {
 			"name": "Gilded Jacket",
 			"description": "Shoot through enemies for <y>up to 450% damage</c>, <b>dealing more damage to closer enemies</c>."
