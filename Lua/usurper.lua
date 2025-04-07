@@ -21,6 +21,8 @@ local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.c
 local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 18, 16)
 local sprite_shoot1alta = Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 7, 38, 27)
 local sprite_shoot1altb = Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 7, 22, 19)
+local sprite_blade1 = Resources.sprite_load(NAMESPACE, "usurperBlade1", path.combine(PATH, "Sprites/blade1.png"), 1, 38, 27)
+local sprite_blade2 = Resources.sprite_load(NAMESPACE, "usurperBlade2", path.combine(PATH, "Sprites/blade2.png"), 1, 22, 19)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
 local sprite_shoot3 = Resources.sprite_load(NAMESPACE, "usurperShoot3", path.combine(PATH, "Sprites/shoot3.png"), 9, 21, 10)
 local sprite_shoot3_trail = Resources.sprite_load(NAMESPACE, "usurperShoot3Trail", path.combine(PATH, "Sprites/shoot3Trail.png"), 9, 21, 10)
@@ -123,6 +125,7 @@ surp:onInit(function(actor)
 	actor.sprite_jump_peak_half = jump_peak_half
 	actor.sprite_fall_half = fall_half
 	
+	actor:get_data().blade = 0
 	actor:get_data().counter = 0
 	actor:get_data().clone = 0
 	actor:get_data().clone2 = 0
@@ -138,10 +141,16 @@ assassin:set_sprite(sprite_void, true, true, false)
 assassin:set_life(60, 90)
 assassin:set_gravity(0.1, 90)
 
-local trail = Particle.new(NAMESPACE, "usurperTrail")
-trail:set_sprite(sprite_void, true, true, false)
-trail:set_alpha2(1, 0)
-trail:set_life(16, 16)
+local assassin2 = Particle.new(NAMESPACE, "usurperAssassin2")
+assassin2:set_sprite(sprite_void, true, true, false)
+assassin2:set_life(60, 90)
+assassin2:set_gravity(0.01, 90)
+
+local rTrail = Particle.new(NAMESPACE, "usurperTrail")
+rTrail:set_sprite(sprite_void, true, true, false)
+rTrail:set_alpha2(1, 0)
+rTrail:set_life(16, 16)
+
 
 
 surp:onStep(function(actor)
@@ -156,6 +165,7 @@ surp:onStep(function(actor)
 		trail.image_index = actor.image_index - 1
 		trail.image_xscale = actor.image_xscale
 		trail.image_blend = Color.BLACK
+		trail.image_alpha = math.min(120, actor:get_data().counter) / 120
 	end
 	if actor:get_data().counter % 8 == 0 and actor:get_data().counter > 0 then
 		assassin:create(actor.x + math.random(-8, 8), actor.y + math.random(-8, 8), 1, Particle.SYSTEM.middle)
@@ -164,6 +174,9 @@ surp:onStep(function(actor)
 	if actor:get_data().clone > 0 then
 		actor:get_data().clone = actor:get_data().clone - 1
 		actor:get_data().clone2 = actor:get_data().clone2 - 1
+	end
+	if actor:get_data().blade > 0 then
+		actor:get_data().blade = actor:get_data().blade - 1
 	end
 end)
 
@@ -325,9 +338,9 @@ objCloneReturn:onCreate(function(self)
 end)
 
 objCloneReturn:onStep(function(self)
-	trail:set_orientation(self.direction, self.direction, 0, 0, false)
-	trail:set_scale(math.max(1, self.speed / 2), 1)
-	trail:create(self.x, self.y, 1, Particle.SYSTEM.middle)
+	rTrail:set_orientation(self.direction, self.direction, 0, 0, false)
+	rTrail:set_scale(math.max(1, self.speed / 2), 1)
+	rTrail:create(self.x, self.y, 1, Particle.SYSTEM.middle)
 	
 	if self:get_data().returntimer > 0 then
 		self:get_data().returntimer = self:get_data().returntimer - 1
@@ -362,6 +375,75 @@ end)
 
 local objBlade = Object.new(NAMESPACE, "usurperUmbralBlade")
 objBlade:clear_callbacks()
+
+objBlade:onCreate(function(self)
+	self.sprite_index = sprite_blade1
+	self.speed = 4
+	self.parent = -4
+	self:get_data().damage = 1.8
+	self:get_data().hit = {}
+	self:get_data().lifetime = 20
+end)
+
+objBlade:onStep(function(self)
+	if not Instance.exists(self.parent) then
+		self:destroy()
+		return
+	end
+
+	local data = self:get_data()
+
+	data.lifetime = data.lifetime - 1
+	self.speed = math.min(12, self.speed * 1.05)
+	self.image_xscale = self.image_xscale * 1.03
+	
+	if math.random() > 0.9 and data.lifetime <= 10 then
+		assassin2:set_speed(0.1, 0.3, 0, 0)
+		assassin2:set_direction(self.direction + 180, self.direction + 180, 0, 0)
+		assassin2:create(self.x + math.random(-8, 8), self.y + math.random(-8, 8), 1, Particle.SYSTEM.above)
+	end
+	
+	if data.lifetime % 2 == 0 then
+		local trail = GM.instance_create(self.x, self.y, gm.constants.oEfTrail)
+		trail.sprite_index = self.sprite_index
+		trail.image_xscale = self.image_xscale
+		trail.image_alpha = self.image_alpha * 0.75
+		trail.depth = self.depth + 1
+	end
+	
+	for _, victim in ipairs(self:get_collisions(gm.constants.pActorCollisionBase)) do
+		if self.parent:attack_collision_canhit(victim) and not data.hit[victim.id] then
+			if gm._mod_net_isHost() then
+				local attack = self.parent:fire_direct(victim, data.damage, self.direction, victim.x, victim.y, nil)
+			end
+			local flash = GM.instance_create(victim.x, victim.y, gm.constants.oEfFlash)
+			flash.parent = victim
+			flash.rate = 0.05
+			flash.image_alpha = 1
+			flash.image_blend = Color.BLACK
+			for i=1, 4 do
+				local height = gm.round(gm.sprite_get_height(victim.sprite_index) / 2)
+				local width = gm.round(gm.sprite_get_width(victim.sprite_index) / 2)
+				local xx = victim.x + math.random(-width, width)
+				local yy = victim.y + math.random(-height, height)
+				assassin:create(xx, yy, 1, Particle.SYSTEM.above)
+				Particle.find("ror", "PixelDust"):create(xx, yy, 1, Particle.SYSTEM.above)
+			end
+			self:sound_play(gm.constants.wMercenary_EviscerateWhiff, 1, 0.8 + math.random() * 0.2)
+			data.damage = data.damage * 0.75
+			data.hit[victim.id] = true
+		end
+	end
+	
+	if data.lifetime <= 0 and self.image_alpha > 0 then
+		self.image_alpha = self.image_alpha - 0.05
+	end
+	
+	if data.lifetime <= 0 and self.image_alpha <= 0 then
+		self:destroy()
+		return
+	end
+end)
 
 
 -- Gilded Tap
@@ -482,7 +564,7 @@ local blade = Skill.new(NAMESPACE, "usurperZ_alt")
 surp:add_primary(blade)
 blade:set_skill_icon(sprite_skills, 6)
 blade.cooldown = 0
-blade.damage = 1.6
+blade.damage = 1.8
 blade.is_primary = true
 blade.is_utility = false
 blade.allow_buffered_input = true
@@ -512,7 +594,7 @@ stblade:onEnter(function(actor, data)
 end)
 
 stblade:onStep(function(actor, data)
-	actor:skill_util_strafe_update(0.2 * actor.attack_speed, 0.5)
+	actor:skill_util_strafe_update(0.22 * actor.attack_speed, 0.5)
 	actor:skill_util_step_strafe_sprites()
 	actor:skill_util_strafe_turn_update()
 	
@@ -548,10 +630,26 @@ stblade:onStep(function(actor, data)
 				if cracker_shot then
 					local attack = actor:fire_bullet(actor.x, actor.y, 700, actor:skill_util_facing_direction(), actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 					attack.attack_info.climb = i * 8
-				else
-					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 90, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+				elseif actor:get_data().blade <= 0 then
+					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 					attack.max_hit_number = 5
 					attack.attack_info.climb = i * 8
+				else
+					local flash = GM.instance_create(actor.x, actor.y, gm.constants.oEfFlash)
+					flash.parent = actor
+					flash.rate = 0.05
+					flash.image_alpha = 0.5
+					flash.image_blend = Color.BLACK
+					local proj = objBlade:create(actor.x, actor.y)
+					if actor.z_count % 2 == 1 then
+						proj.sprite_index = sprite_blade1
+					else
+						proj.sprite_index = sprite_blade2
+					end
+					proj.parent = actor
+					proj.direction = actor:skill_util_facing_direction()
+					proj.image_xscale = actor.image_xscale
+					proj:get_data().damage = actor:skill_get_damage(blade)
 				end
 			end
 			
@@ -563,18 +661,35 @@ stblade:onStep(function(actor, data)
 						if cracker_shot then
 							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 							attack.attack_info.climb = 8 + i * 8
-						else
-							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 90, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+						elseif actor:get_data().blade <= 0 then
+							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 							attack.max_hit_number = 5
 							attack.attack_info.climb = 8 + i * 8
+						else
+							local proj = objBlade:create(pos, actor.y)
+							if actor.z_count % 2 == 1 then
+								proj.sprite_index = sprite_blade1
+							else
+								proj.sprite_index = sprite_blade2
+							end
+							proj.parent = actor
+							proj.direction = actor:skill_util_facing_direction() + 180
+							proj.image_xscale = -actor.image_xscale
+							proj:get_data().damage = actor:skill_get_damage(blade)
 						end
 					end
-					shadow:sound_play(gm.constants.wBoss1Warp2, 0.6, 0.8 + math.random() * 0.2)
+					shadow:sound_play(gm.constants.wMinerShoot1_2, 0.6, 0.8 + math.random() * 0.2)
+					if actor:get_data().blade > 0 then
+						shadow:sound_play(gm.constants.wBoss1DeathWarp, 0.3, 0.8 + math.random() * 0.2)
+					end
 				end
 			end
 		end
 		
 		actor:sound_play(gm.constants.wMinerShoot1_1, 1, 0.8 + math.random() * 0.2)
+		if actor:get_data().blade > 0 then
+			actor:sound_play(gm.constants.wBoss1Warp2, 0.6, 0.8 + math.random() * 0.2)
+		end
 		data.fired = 1
 	end
 	
@@ -591,6 +706,7 @@ stblade:onGetInterruptPriority(function(actor, data)
 		return State.ACTOR_STATE_INTERRUPT_PRIORITY.any
 	end
 end)
+
 
 
 -- Gilded Jacket
@@ -741,6 +857,10 @@ stdive:onStep(function(actor, data)
 	actor:skill_util_exit_state_on_anim_end()
 end)
 
+stdive:onExit(function(actor, data)
+	actor:get_data().blade = 2 * 60
+end)
+
 Callback.add(Callback.TYPE.onDamageBlocked, "usurperTranscendantDiveSpawnUmbra", function(actor, attacker, hit_info)
 	if actor.object_index == gm.constants.oP and actor:get_data().counter > 0 then
 		actor.invincible = 60
@@ -778,6 +898,7 @@ clone:onActivate(function(actor)
 	actor:sound_play(gm.constants.wImpPortal1, 1, 0.6 + math.random() * 0.2)
 	actor:screen_shake(4)
 	actor:get_data().clone = 6 * 60
+	actor:get_data().blade = 4 * 60
 	for _, shadow in ipairs(Instance.find_all(objClone)) do
 		if shadow.parent.value == actor.value then
 			shadow:destroy()
