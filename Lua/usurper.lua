@@ -156,8 +156,8 @@ rTrail:set_life(16, 16)
 surp:onStep(function(actor)
 	if actor:get_data().counter > 0 then
 		actor:freeze_active_skill(Skill.SLOT.utility)
-		if actor.invincible == 0 then
-			actor.invincible = 1
+		if actor.invincible <= 1 then
+			actor.invincible = 2
 		end
 		actor:get_data().counter = actor:get_data().counter - 1
 		local trail =  GM.instance_create(actor.x, actor.y, gm.constants.oEfTrail)
@@ -430,7 +430,7 @@ objBlade:onStep(function(self)
 				Particle.find("ror", "PixelDust"):create(xx, yy, 1, Particle.SYSTEM.above)
 			end
 			self:sound_play(gm.constants.wMercenary_EviscerateWhiff, 1, 0.8 + math.random() * 0.2)
-			data.damage = data.damage * 0.75
+			data.damage = data.damage * 0.8
 			data.hit[victim.id] = true
 		end
 	end
@@ -631,7 +631,7 @@ stblade:onStep(function(actor, data)
 					local attack = actor:fire_bullet(actor.x, actor.y, 700, actor:skill_util_facing_direction(), actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 					attack.attack_info.climb = i * 8
 				elseif actor:get_data().blade <= 0 then
-					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 90, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 					attack.max_hit_number = 5
 					attack.attack_info.climb = i * 8
 				else
@@ -662,7 +662,7 @@ stblade:onStep(function(actor, data)
 							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 							attack.attack_info.climb = 8 + i * 8
 						elseif actor:get_data().blade <= 0 then
-							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 9, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 							attack.max_hit_number = 5
 							attack.attack_info.climb = 8 + i * 8
 						else
