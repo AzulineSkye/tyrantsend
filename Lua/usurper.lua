@@ -631,7 +631,7 @@ stblade:onStep(function(actor, data)
 					local attack = actor:fire_bullet(actor.x, actor.y, 700, actor:skill_util_facing_direction(), actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 					attack.attack_info.climb = i * 8
 				elseif actor:get_data().blade <= 0 then
-					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 90, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 					attack.max_hit_number = 5
 					attack.attack_info.climb = i * 8
 				else
@@ -662,7 +662,7 @@ stblade:onStep(function(actor, data)
 							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 							attack.attack_info.climb = 8 + i * 8
 						elseif actor:get_data().blade <= 0 then
-							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 90, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 							attack.max_hit_number = 5
 							attack.attack_info.climb = 8 + i * 8
 						else
@@ -858,7 +858,7 @@ stdive:onStep(function(actor, data)
 end)
 
 stdive:onExit(function(actor, data)
-	actor:get_data().blade = 2 * 60
+	actor:get_data().blade = 3 * 60
 end)
 
 Callback.add(Callback.TYPE.onDamageBlocked, "usurperTranscendantDiveSpawnUmbra", function(actor, attacker, hit_info)
@@ -898,7 +898,7 @@ clone:onActivate(function(actor)
 	actor:sound_play(gm.constants.wImpPortal1, 1, 0.6 + math.random() * 0.2)
 	actor:screen_shake(4)
 	actor:get_data().clone = 6 * 60
-	actor:get_data().blade = 4 * 60
+	actor:get_data().blade = 5 * 60
 	for _, shadow in ipairs(Instance.find_all(objClone)) do
 		if shadow.parent.value == actor.value then
 			shadow:destroy()
