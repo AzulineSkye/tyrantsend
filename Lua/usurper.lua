@@ -564,7 +564,7 @@ local blade = Skill.new(NAMESPACE, "usurperZ_alt")
 surp:add_primary(blade)
 blade:set_skill_icon(sprite_skills, 6)
 blade.cooldown = 0
-blade.damage = 1.8
+blade.damage = 1.6
 blade.is_primary = true
 blade.is_utility = false
 blade.allow_buffered_input = true
@@ -662,7 +662,7 @@ stblade:onStep(function(actor, data)
 							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 							attack.attack_info.climb = 8 + i * 8
 						elseif actor:get_data().blade <= 0 then
-							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 90, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 9, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 							attack.max_hit_number = 5
 							attack.attack_info.climb = 8 + i * 8
 						else
