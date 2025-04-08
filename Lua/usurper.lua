@@ -862,14 +862,16 @@ stdive:onExit(function(actor, data)
 end)
 
 Callback.add(Callback.TYPE.onDamageBlocked, "usurperTranscendantDiveSpawnUmbra", function(actor, attacker, hit_info)
-	if actor.object_index == gm.constants.oP and actor:get_data().counter > 0 then
-		actor.invincible = 60
-		local umbra = objUmbra:create(actor.x, actor.y)
-		umbra.parent = actor
-		umbra.image_xscale = actor.image_xscale
-		local circle = GM.instance_create(actor.x, actor.y, gm.constants.oEfCircle)
-		circle.radius = 10
-		circle.image_blend = Color.BLACK
+	if actor.object_index == gm.constants.oP and actor.class == surp_id then
+		if actor:get_data().counter > 0 then
+			actor.invincible = 60
+			local umbra = objUmbra:create(actor.x, actor.y)
+			umbra.parent = actor
+			umbra.image_xscale = actor.image_xscale
+			local circle = GM.instance_create(actor.x, actor.y, gm.constants.oEfCircle)
+			circle.radius = 10
+			circle.image_blend = Color.BLACK
+		end
 	end
 end)
 
