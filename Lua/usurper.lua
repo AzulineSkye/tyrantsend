@@ -42,6 +42,36 @@ local sprite_void = Resources.sprite_load(NAMESPACE, "usurperVoid", path.combine
 local sound_charge = Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
 local sound_counter = Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
 
+-- Malice
+local sprite_portrait_malice = Resources.sprite_load(NAMESPACE, "usurperPortraitMalice", path.combine(PATH, "Sprites/portraitMalice.png"), 3)
+local sprite_portrait_small_malice	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmallMalice", path.combine(PATH, "Sprites/portraitSmallMalice.png"))
+local sprite_loadout_malice = Resources.sprite_load(NAMESPACE, "usurperSelectMalice", path.combine(PATH, "Sprites/selectMalice.png"), 13, 28, 0)
+
+-- Arctic
+local sprite_portrait_arctic = Resources.sprite_load(NAMESPACE, "usurperPortraitArctic", path.combine(PATH, "Sprites/portraitArctic.png"), 3)
+local sprite_portrait_small_arctic	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmallArctic", path.combine(PATH, "Sprites/portraitSmallArctic.png"))
+local sprite_loadout_arctic = Resources.sprite_load(NAMESPACE, "usurperSelectArctic", path.combine(PATH, "Sprites/selectArctic.png"), 13, 28, 0)
+
+-- Android
+local sprite_portrait_android = Resources.sprite_load(NAMESPACE, "usurperPortraitAndroid", path.combine(PATH, "Sprites/portraitAndroid.png"), 3)
+local sprite_portrait_small_android	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmallAndroid", path.combine(PATH, "Sprites/portraitSmallAndroid.png"))
+local sprite_loadout_android = Resources.sprite_load(NAMESPACE, "usurperSelectAndroid", path.combine(PATH, "Sprites/selectAndroid.png"), 13, 28, 0)
+
+-- Arid
+local sprite_portrait_arid = Resources.sprite_load(NAMESPACE, "usurperPortraitArid", path.combine(PATH, "Sprites/portraitArid.png"), 3)
+local sprite_portrait_small_arid	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmallArid", path.combine(PATH, "Sprites/portraitSmallArid.png"))
+local sprite_loadout_arid = Resources.sprite_load(NAMESPACE, "usurperSelectArid", path.combine(PATH, "Sprites/selectArid.png"), 13, 28, 0)
+
+-- Replika
+local sprite_portrait_replika = Resources.sprite_load(NAMESPACE, "usurperPortraitReplika", path.combine(PATH, "Sprites/portraitReplika.png"), 3)
+local sprite_portrait_small_replika	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmallReplika", path.combine(PATH, "Sprites/portraitSmallReplika.png"))
+local sprite_loadout_replika = Resources.sprite_load(NAMESPACE, "usurperSelectReplika", path.combine(PATH, "Sprites/selectReplika.png"), 13, 28, 0)
+
+-- Hemorrhage
+local sprite_portrait_hemorrhage = Resources.sprite_load(NAMESPACE, "usurperPortraitHemorrhage", path.combine(PATH, "Sprites/portraitHemorrhage.png"), 3)
+local sprite_portrait_small_hemorrhage	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmallHemorrhage", path.combine(PATH, "Sprites/portraitSmallHemorrhage.png"))
+local sprite_loadout_hemorrhage = Resources.sprite_load(NAMESPACE, "usurperSelectHemorrhage", path.combine(PATH, "Sprites/selectHemorrhage.png"), 13, 28, 0)
+
 local surp = Survivor.new(NAMESPACE, "usurper")
 local surp_id = surp.value
 
@@ -78,12 +108,12 @@ surp:set_animations({
 })
 
 surp:set_palettes(sprite_palette, sprite_pallete, sprite_pallete)
-surp:add_skin("Malice", 1, sprite_loadout, sprite_portrait, sprite_portrait_small)
-surp:add_skin("Arctic", 2, sprite_loadout, sprite_portrait, sprite_portrait_small)
-surp:add_skin("Android", 3, sprite_loadout, sprite_portrait, sprite_portrait_small)
-surp:add_skin("Arid", 4, sprite_loadout, sprite_portrait, sprite_portrait_small)
-surp:add_skin("Replika", 5, sprite_loadout, sprite_portrait, sprite_portrait_small)
-surp:add_skin("Hemorrhage", 6, sprite_loadout, sprite_portrait, sprite_portrait_small)
+surp:add_skin("Malice", 1, sprite_loadout_malice, sprite_portrait_malice, sprite_portrait_small_malice)
+surp:add_skin("Arctic", 2, sprite_loadout_arctic, sprite_portrait_arctic, sprite_portrait_small_arctic)
+surp:add_skin("Android", 3, sprite_loadout_android, sprite_portrait_android, sprite_portrait_small_android)
+surp:add_skin("Arid", 4, sprite_loadout_arid, sprite_portrait_arid, sprite_portrait_small_arid)
+surp:add_skin("Replika", 5, sprite_loadout_replika, sprite_portrait_replika, sprite_portrait_small_replika)
+surp:add_skin("Hemorrhage", 6, sprite_loadout_hemorrhage, sprite_portrait_hemorrhage, sprite_portrait_small_hemorrhage)
 
 surp:set_cape_offset(0, -8, 1, -2)
 surp:set_primary_color(Color.from_rgb(244, 243, 183))
