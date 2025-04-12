@@ -19,8 +19,8 @@ local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combi
 local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 18)
 local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.combine(PATH, "Sprites/shoot1a.png"), 4, 14, 17)
 local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 18, 16)
-local sprite_shoot1alta = Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 7, 38, 27)
-local sprite_shoot1altb = Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 7, 22, 19)
+local sprite_shoot1alta = Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 6, 38, 27)
+local sprite_shoot1altb = Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 6, 22, 19)
 local sprite_blade1 = Resources.sprite_load(NAMESPACE, "usurperBlade1", path.combine(PATH, "Sprites/blade1.png"), 1, 38, 27)
 local sprite_blade2 = Resources.sprite_load(NAMESPACE, "usurperBlade2", path.combine(PATH, "Sprites/blade2.png"), 1, 22, 19)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
@@ -624,7 +624,7 @@ stblade:onEnter(function(actor, data)
 end)
 
 stblade:onStep(function(actor, data)
-	actor:skill_util_strafe_update(0.22 * actor.attack_speed, 0.5)
+	actor:skill_util_strafe_update(0.2 * actor.attack_speed, 0.5)
 	actor:skill_util_step_strafe_sprites()
 	actor:skill_util_strafe_turn_update()
 	
@@ -732,7 +732,7 @@ stblade:onExit(function(actor, data)
 end)
 
 stblade:onGetInterruptPriority(function(actor, data)
-	if actor.image_index2 >= 5.8 then
+	if actor.image_index2 >= 4.8 then
 		return State.ACTOR_STATE_INTERRUPT_PRIORITY.any
 	end
 end)
