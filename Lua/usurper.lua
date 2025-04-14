@@ -19,8 +19,8 @@ local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combi
 local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 18)
 local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.combine(PATH, "Sprites/shoot1a.png"), 4, 14, 17)
 local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 18, 16)
-local sprite_shoot1alta = Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 6, 38, 27)
-local sprite_shoot1altb = Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 6, 22, 19)
+local sprite_shoot1alta = Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 7, 17, 36)
+local sprite_shoot1altb = Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 7, 17, 36)
 local sprite_blade1 = Resources.sprite_load(NAMESPACE, "usurperBlade1", path.combine(PATH, "Sprites/blade1.png"), 1, 38, 27)
 local sprite_blade2 = Resources.sprite_load(NAMESPACE, "usurperBlade2", path.combine(PATH, "Sprites/blade2.png"), 1, 22, 19)
 local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
@@ -624,7 +624,7 @@ stblade:onEnter(function(actor, data)
 end)
 
 stblade:onStep(function(actor, data)
-	actor:skill_util_strafe_update(0.2 * actor.attack_speed, 0.5)
+	actor:skill_util_strafe_update(0.22 * actor.attack_speed, 0.5)
 	actor:skill_util_step_strafe_sprites()
 	actor:skill_util_strafe_turn_update()
 	
@@ -661,7 +661,7 @@ stblade:onStep(function(actor, data)
 					local attack = actor:fire_bullet(actor.x, actor.y, 700, actor:skill_util_facing_direction(), actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 					attack.attack_info.climb = i * 8
 				elseif actor:get_data().blade <= 0 then
-					local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+					local attack = actor:fire_explosion(actor.x + 35 * actor.image_xscale, actor.y, 120, 80, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 					attack.max_hit_number = 5
 					attack.attack_info.climb = i * 8
 				else
@@ -692,7 +692,7 @@ stblade:onStep(function(actor, data)
 							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(blade), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 							attack.attack_info.climb = 8 + i * 8
 						elseif actor:get_data().blade <= 0 then
-							local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y + 8, 108, 48, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
+							local attack = actor:fire_explosion(pos + 35 * -actor.image_xscale, actor.y, 120, 80, actor:skill_get_damage(blade), nil, gm.constants.sSparks10)
 							attack.max_hit_number = 5
 							attack.attack_info.climb = 8 + i * 8
 						else
