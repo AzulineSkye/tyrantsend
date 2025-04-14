@@ -624,7 +624,7 @@ stblade:onEnter(function(actor, data)
 end)
 
 stblade:onStep(function(actor, data)
-	actor:skill_util_strafe_update(0.2 * actor.attack_speed, 0.5)
+	actor:skill_util_strafe_update(0.19 * actor.attack_speed, 0.5)
 	actor:skill_util_step_strafe_sprites()
 	actor:skill_util_strafe_turn_update()
 	
