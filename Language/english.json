@@ -11,7 +11,7 @@
 "skill" : {
 	"usurperZ": {
 			"name": "Gilded Tap",
-			"description": "Shoot rapidly for <y>60% damage</c>."
+			"description": "Shoot rapidly for <y>70% damage</c>. \n<b>Accuracy decreases the longer you fire.</c>"
 		},
 	"usurperZ_alt": {
 			"name": "Umbral Blade",
@@ -20,6 +20,10 @@
 	"usurperX": {
 			"name": "Gilded Jacket",
 			"description": "Shoot <y>through enemies</c> for <y>up to 450% damage</c>, <b>dealing more damage to closer enemies</c>."
+		},
+	"usurperX_alt": {
+			"name": "Divine Light",
+			"description": "Summon an <y>orb of light</c> in front of you. \nHitting it with your special skill propels it forward for up to <y>1200% damage</c>, depending on it's <b>velocity</c>."
 		},
 	"usurperC": {
 			"name": "Transcendant Dive",

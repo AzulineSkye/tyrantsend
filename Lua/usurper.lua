@@ -1,46 +1,49 @@
-local sprite_loadout = Resources.sprite_load(NAMESPACE, "usurperSelect", path.combine(PATH, "Sprites/select.png"), 13, 28, 0)
-local sprite_portrait = Resources.sprite_load(NAMESPACE, "usurperPortrait", path.combine(PATH, "Sprites/portrait.png"), 3)
-local sprite_portrait_small	= Resources.sprite_load(NAMESPACE, "usurperPortraitSmall", path.combine(PATH, "Sprites/portraitSmall.png"))
-local sprite_log = Resources.sprite_load(NAMESPACE, "usurperLog", path.combine(PATH, "Sprites/log.png"))
-local sprite_skills = Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 7)
-local sprite_idle = Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine(PATH, "Sprites/idle.png"), 1, 5, 10)
-local sprite_idle_half = Resources.sprite_load(NAMESPACE, "usurperIdleHalf", path.combine(PATH, "Sprites/idleHalf.png"), 1, 5, 10)
-local sprite_walk = Resources.sprite_load(NAMESPACE, "usurperWalk", path.combine(PATH, "Sprites/walk.png"), 8, 15, 18)
-local sprite_walk_half = Resources.sprite_load(NAMESPACE, "usurperWalkHalf", path.combine(PATH, "Sprites/walkHalf.png"), 8, 5, 11)
-local sprite_walk_back = Resources.sprite_load(NAMESPACE, "usurperWalkBack", path.combine(PATH, "Sprites/walkBack.png"), 8, 7, 9)
-local sprite_jump = Resources.sprite_load(NAMESPACE, "usurperJump", path.combine(PATH, "Sprites/jump.png"), 1, 10, 11)
-local sprite_jump_half = Resources.sprite_load(NAMESPACE, "usurperJumpHalf", path.combine(PATH, "Sprites/jumpHalf.png"), 1, 10, 10)
-local sprite_jump_peak = Resources.sprite_load(NAMESPACE, "usurperJumpPeak", path.combine(PATH, "Sprites/jumpPeak.png"), 1, 10, 11)
-local sprite_jump_peak_half	= Resources.sprite_load(NAMESPACE, "usurperJumpPeakHalf", path.combine(PATH, "Sprites/jumpPeakHalf.png"), 1, 10, 10)
-local sprite_fall = Resources.sprite_load(NAMESPACE, "usurperFall", path.combine(PATH, "Sprites/fall.png"), 1, 8, 11)
-local sprite_fall_half = Resources.sprite_load(NAMESPACE, "usurperFallHalf", path.combine(PATH, "Sprites/fallHalf.png"), 1, 8, 10)
-local sprite_climb = Resources.sprite_load(NAMESPACE, "usurperClimb", path.combine(PATH, "Sprites/climb.png"), 6, 10, 14)
-local sprite_death = Resources.sprite_load(NAMESPACE, "usurperDeath", path.combine(PATH, "Sprites/death.png"), 8, 26, 6)
-local sprite_decoy = Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 18)
-local sprite_shoot1a = Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.combine(PATH, "Sprites/shoot1a.png"), 4, 14, 17)
-local sprite_shoot1b = Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 18, 16)
-local sprite_shoot1alta = Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 7, 13, 18)
-local sprite_shoot1altb = Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 7, 13, 36)
-local sprite_blade1 = Resources.sprite_load(NAMESPACE, "usurperBlade1", path.combine(PATH, "Sprites/blade1.png"), 1, 38, 27)
-local sprite_blade2 = Resources.sprite_load(NAMESPACE, "usurperBlade2", path.combine(PATH, "Sprites/blade2.png"), 1, 22, 19)
-local sprite_shoot2 = Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
-local sprite_shoot3 = Resources.sprite_load(NAMESPACE, "usurperShoot3", path.combine(PATH, "Sprites/shoot3.png"), 9, 21, 10)
-local sprite_shoot3_trail = Resources.sprite_load(NAMESPACE, "usurperShoot3Trail", path.combine(PATH, "Sprites/shoot3Trail.png"), 9, 21, 10)
-local sprite_shoot3_parry = Resources.sprite_load(NAMESPACE, "usurperShoot3Parry", path.combine(PATH, "Sprites/shoot3Parry.png"), 5, 15, 10)
-local sprite_counter = Resources.sprite_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.png"), 13, 41, 38)
-local sprite_shoot4 = Resources.sprite_load(NAMESPACE, "usurperShoot4", path.combine(PATH, "Sprites/shoot4.png"), 13, 41, 38)
-local sprite_shoot4b = Resources.sprite_load(NAMESPACE, "usurperShoot4B", path.combine(PATH, "Sprites/shoot4b.png"), 13, 41, 38)
-local sprite_shoot5 = Resources.sprite_load(NAMESPACE, "usurperShoot5", path.combine(PATH, "Sprites/shoot5.png"), 14, 41, 55)
-local sprite_shoot5b = Resources.sprite_load(NAMESPACE, "usurperShoot5B", path.combine(PATH, "Sprites/shoot5b.png"), 14, 41, 55)
-local sprite_maelstrom = Resources.sprite_load(NAMESPACE, "usurperMaelstrom", path.combine(PATH, "Sprites/maelstrom.png"), 8, 30, 32)
-local sprite_credits = Resources.sprite_load(NAMESPACE, "usurperCredits", path.combine(PATH, "Sprites/credits.png"), 1, 12, 10)
-local sprite_drone_idle = Resources.sprite_load(NAMESPACE, "usurperDroneIdle", path.combine(PATH, "Sprites/droneIdle.png"), 5, 11, 15)
-local sprite_drone_shoot = Resources.sprite_load(NAMESPACE, "usurperDroneShoot", path.combine(PATH, "Sprites/droneShoot.png"), 5, 25, 15)
-local sprite_palette = Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
-local sprite_loadout_palette = Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
-local sprite_void = Resources.sprite_load(NAMESPACE, "usurperVoid", path.combine(PATH, "Sprites/void.png"), 5, 4, 4)
-local sound_charge = Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
-local sound_counter = Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
+local sprite_loadout = 				Resources.sprite_load(NAMESPACE, "usurperSelect", path.combine(PATH, "Sprites/select.png"), 13, 28, 0)
+local sprite_portrait = 			Resources.sprite_load(NAMESPACE, "usurperPortrait", path.combine(PATH, "Sprites/portrait.png"), 3)
+local sprite_portrait_small	= 		Resources.sprite_load(NAMESPACE, "usurperPortraitSmall", path.combine(PATH, "Sprites/portraitSmall.png"))
+local sprite_log = 					Resources.sprite_load(NAMESPACE, "usurperLog", path.combine(PATH, "Sprites/log.png"))
+local sprite_skills = 				Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 8)
+
+local sprite_idle = 				Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine(PATH, "Sprites/idle.png"), 1, 5, 10)
+local sprite_idle_half = 			Resources.sprite_load(NAMESPACE, "usurperIdleHalf", path.combine(PATH, "Sprites/idleHalf.png"), 1, 5, 10)
+local sprite_walk = 				Resources.sprite_load(NAMESPACE, "usurperWalk", path.combine(PATH, "Sprites/walk.png"), 8, 15, 18)
+local sprite_walk_half = 			Resources.sprite_load(NAMESPACE, "usurperWalkHalf", path.combine(PATH, "Sprites/walkHalf.png"), 8, 5, 11)
+local sprite_walk_back = 			Resources.sprite_load(NAMESPACE, "usurperWalkBack", path.combine(PATH, "Sprites/walkBack.png"), 8, 7, 9)
+local sprite_jump = 				Resources.sprite_load(NAMESPACE, "usurperJump", path.combine(PATH, "Sprites/jump.png"), 1, 10, 11)
+local sprite_jump_half = 			Resources.sprite_load(NAMESPACE, "usurperJumpHalf", path.combine(PATH, "Sprites/jumpHalf.png"), 1, 10, 10)
+local sprite_jump_peak = 			Resources.sprite_load(NAMESPACE, "usurperJumpPeak", path.combine(PATH, "Sprites/jumpPeak.png"), 1, 10, 11)
+local sprite_jump_peak_half	= 		Resources.sprite_load(NAMESPACE, "usurperJumpPeakHalf", path.combine(PATH, "Sprites/jumpPeakHalf.png"), 1, 10, 10)
+local sprite_fall = 				Resources.sprite_load(NAMESPACE, "usurperFall", path.combine(PATH, "Sprites/fall.png"), 1, 8, 11)
+local sprite_fall_half = 			Resources.sprite_load(NAMESPACE, "usurperFallHalf", path.combine(PATH, "Sprites/fallHalf.png"), 1, 8, 10)
+local sprite_climb = 				Resources.sprite_load(NAMESPACE, "usurperClimb", path.combine(PATH, "Sprites/climb.png"), 6, 10, 14)
+local sprite_death = 				Resources.sprite_load(NAMESPACE, "usurperDeath", path.combine(PATH, "Sprites/death.png"), 8, 26, 6)
+local sprite_decoy = 				Resources.sprite_load(NAMESPACE, "usurperDecoy", path.combine(PATH, "Sprites/decoy.png"), 1, 18, 18)
+
+local sprite_shoot1a = 				Resources.sprite_load(NAMESPACE, "usurperShoot1b", path.combine(PATH, "Sprites/shoot1a.png"), 4, 14, 17)
+local sprite_shoot1b = 				Resources.sprite_load(NAMESPACE, "usurperShoot1a", path.combine(PATH, "Sprites/shoot1b.png"), 4, 18, 16)
+local sprite_shoot1alta = 			Resources.sprite_load(NAMESPACE, "usurperShoot1Alta", path.combine(PATH, "Sprites/shoot1alta.png"), 7, 13, 18)
+local sprite_shoot1altb = 			Resources.sprite_load(NAMESPACE, "usurperShoot1Altb", path.combine(PATH, "Sprites/shoot1altb.png"), 7, 13, 36)
+local sprite_blade1 = 				Resources.sprite_load(NAMESPACE, "usurperBlade1", path.combine(PATH, "Sprites/blade1.png"), 1, 38, 27)
+local sprite_blade2 = 				Resources.sprite_load(NAMESPACE, "usurperBlade2", path.combine(PATH, "Sprites/blade2.png"), 1, 22, 19)
+local sprite_shoot2 = 				Resources.sprite_load(NAMESPACE, "usurperShoot2", path.combine(PATH, "Sprites/shoot2.png"), 6, 8, 22)
+local sprite_shoot3 = 				Resources.sprite_load(NAMESPACE, "usurperShoot3", path.combine(PATH, "Sprites/shoot3.png"), 9, 21, 10)
+local sprite_shoot3_trail = 		Resources.sprite_load(NAMESPACE, "usurperShoot3Trail", path.combine(PATH, "Sprites/shoot3Trail.png"), 9, 21, 10)
+local sprite_shoot3_parry = 		Resources.sprite_load(NAMESPACE, "usurperShoot3Parry", path.combine(PATH, "Sprites/shoot3Parry.png"), 5, 15, 10)
+local sprite_counter = 				Resources.sprite_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.png"), 13, 41, 38)
+local sprite_shoot4 = 				Resources.sprite_load(NAMESPACE, "usurperShoot4", path.combine(PATH, "Sprites/shoot4.png"), 13, 41, 38)
+local sprite_shoot4b = 				Resources.sprite_load(NAMESPACE, "usurperShoot4B", path.combine(PATH, "Sprites/shoot4b.png"), 13, 41, 38)
+local sprite_shoot5 = 				Resources.sprite_load(NAMESPACE, "usurperShoot5", path.combine(PATH, "Sprites/shoot5.png"), 14, 41, 55)
+local sprite_shoot5b = 				Resources.sprite_load(NAMESPACE, "usurperShoot5B", path.combine(PATH, "Sprites/shoot5b.png"), 14, 41, 55)
+local sprite_maelstrom = 			Resources.sprite_load(NAMESPACE, "usurperMaelstrom", path.combine(PATH, "Sprites/maelstrom.png"), 8, 30, 32)
+local sprite_credits = 				Resources.sprite_load(NAMESPACE, "usurperCredits", path.combine(PATH, "Sprites/credits.png"), 1, 12, 10)
+local sprite_drone_idle = 			Resources.sprite_load(NAMESPACE, "usurperDroneIdle", path.combine(PATH, "Sprites/droneIdle.png"), 5, 11, 15)
+local sprite_drone_shoot = 			Resources.sprite_load(NAMESPACE, "usurperDroneShoot", path.combine(PATH, "Sprites/droneShoot.png"), 5, 25, 15)
+
+local sprite_palette = 				Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
+local sprite_loadout_palette = 		Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
+local sprite_void = 				Resources.sprite_load(NAMESPACE, "usurperVoid", path.combine(PATH, "Sprites/void.png"), 5, 4, 4)
+local sound_charge = 				Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
+local sound_counter = 				Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
 
 -- Malice
 local sprite_portrait_malice = Resources.sprite_load(NAMESPACE, "usurperPortraitMalice", path.combine(PATH, "Sprites/portraitMalice.png"), 3)
@@ -156,6 +159,7 @@ surp:onInit(function(actor)
 	actor.sprite_fall_half = fall_half
 	
 	actor:get_data().blade = 0
+	actor:get_data().accuracy = 0
 	actor:get_data().counter = 0
 	actor:get_data().clone = 0
 	actor:get_data().clone2 = 0
@@ -207,6 +211,9 @@ surp:onStep(function(actor)
 	end
 	if actor:get_data().blade > 0 then
 		actor:get_data().blade = actor:get_data().blade - 1
+	end
+	if actor:get_data().accuracy > 0 then
+		actor:get_data().accuracy = actor:get_data().accuracy - 0.1
 	end
 end)
 
@@ -475,12 +482,90 @@ objBlade:onStep(function(self)
 	end
 end)
 
+local objOrb = Object.new(NAMESPACE, "usurperDivineLightOrb")
+objOrb:clear_callbacks()
+
+objOrb:onCreate(function(self)
+	self.sprite_index = gm.constants.sEfWormOrbSpawn
+	self:sound_play(gm.constants.wBossOrbShoot, 1, 0.8 + math.random() * 0.2)
+	self.image_speed = 0.25
+	self.speed = 4
+	self.parent = -4
+	self.life = 600
+	self:get_data().state = 0
+end)
+
+objOrb:onDraw(function(self)
+	gm.draw_set_alpha(0.5)
+	gm.draw_circle_colour(self.x - 1, self.y - 1, 20, Color.from_hex(0xAECDEE), Color.from_hex(0xAECDEE), false)
+	gm.draw_set_alpha(1)
+end)
+
+objOrb:onStep(function(self)
+	if not Instance.exists(self.parent) then
+		self:destroy()
+		return
+	end
+	
+	local data = self:get_data()
+	
+	if self.life <= 0 then
+		self:destroy()
+	end
+	if self.life > 0 and data.state < 2 then
+		self.life = self.life - 1
+	end
+
+	self.speed = math.max(0, self.speed - 0.2)
+	
+	if data.state == 0 then
+		if self.sprite_index == gm.constants.sEfWormOrbSpawn and self.image_index > 4 then
+			self.sprite_index = gm.constants.sEfWormOrbIdle
+			self.image_index = 0
+			data.state = 1
+		end	
+	elseif data.state == 2 then
+		for _, victim in ipairs(self:get_collisions(gm.constants.pActorCollisionBase)) do
+			if self.parent:attack_collision_canhit(victim) then
+				local flash = GM.instance_create(victim.x, victim.y, gm.constants.oEfFlash)
+				flash.parent = victim
+				flash.rate = 0.05
+				flash.image_alpha = 1
+				flash.image_blend = Color.WHITE
+				self:destroy()
+				break
+			end
+		end
+		
+		if self.speed == 0 then
+			data.state = 1
+			self.life = 600
+		end
+	end
+end)
+
+objOrb:onDestroy(function(self)
+	local data = self:get_data()
+	self:sound_play(gm.constants.wBoss1DeathWarp, 0.8, 0.8 + math.random() * 0.2)
+	self:sound_play(gm.constants.wTurtleExplosion, 1.2, 0.8 + math.random() * 0.2)
+	self:screen_shake(4)
+	
+	if self.parent:is_authority() then
+		local buff_shadow_clone = Buff.find("ror", "shadowClone")
+		for i=0, self.parent:buff_stack_count(buff_shadow_clone) do
+			local attack = self.parent:fire_explosion(self.x, self.y, 96, 96, math.max(2, self.speed / 2 + 2 / 3), gm.constants.sEfArtiStarExplode2, gm.constants.sSparks5)
+			attack.attack_info.climb = i * 8
+		end
+	end
+end)
+
+
 
 -- Gilded Tap
 local tap = surp:get_primary()
 tap:set_skill_icon(sprite_skills, 0)
 tap.cooldown = 0
-tap.damage = 0.6
+tap.damage = 0.7
 tap.is_primary = true
 tap.is_utility = false
 tap.allow_buffered_input = true
@@ -500,6 +585,9 @@ sttap:onEnter(function(actor, data)
 	actor:skill_util_strafe_init()
 	actor:skill_util_strafe_turn_init()
 	
+	if actor:get_data().accuracy < 6 then
+		actor:get_data().accuracy = actor:get_data().accuracy + 0.135
+	end
 	data.fired = 0
 	if math.random() <= 0.5 then
 		actor.sprite_index2 = sprite_shoot1a
@@ -515,6 +603,7 @@ sttap:onStep(function(actor, data)
 	actor:skill_util_strafe_turn_update()
 	
 	actor:get_data().clone2 = 2
+	actor:get_data().accuracy = actor:get_data().accuracy + 0.1
 	
 	if actor.sprite_index == actor.sprite_walk_half[2] then
 		local walk_offset = 0
@@ -547,7 +636,7 @@ sttap:onStep(function(actor, data)
 					local attack = actor:fire_bullet(actor.x, actor.y, 700, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 					attack.attack_info.climb = i * 8
 				else
-					local attack = actor:fire_bullet(actor.x, actor.y, 1400, actor:skill_util_facing_direction(), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1)
+					local attack = actor:fire_bullet(actor.x, actor.y, 1400, actor:skill_util_facing_direction() + math.random(-gm.round(actor:get_data().accuracy), gm.round(actor:get_data().accuracy)), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1)
 					attack.attack_info.climb = i * 8
 				end
 			end
@@ -558,10 +647,10 @@ sttap:onStep(function(actor, data)
 					local pos = shadow.x + (shadow.x - actor.x)
 					for i=0, actor:buff_stack_count(buff_shadow_clone) do
 						if cracker_shot then
-							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(tap), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
+							local attack = actor:fire_bullet(pos, actor.y, 700, actor:skill_util_facing_direction() + 180 + math.random(-gm.round(actor:get_data().accuracy), gm.round(actor:get_data().accuracy)), actor:skill_get_damage(tap), 1, gm.constants.sSparks1, Attack_Info.TRACER.drill)
 							attack.attack_info.climb = 8 + i * 8
 						else
-							local attack = actor:fire_bullet(pos, actor.y, 1400, actor:skill_util_facing_direction() + 180, actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1)
+							local attack = actor:fire_bullet(pos, actor.y, 1400, actor:skill_util_facing_direction() + 180 + math.random(-gm.round(actor:get_data().accuracy), gm.round(actor:get_data().accuracy)), actor:skill_get_damage(tap), nil, gm.constants.sSparks1, Attack_Info.TRACER.commando1)
 							attack.attack_info.climb = 8 + i * 8
 						end
 					end
@@ -823,6 +912,50 @@ Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hi
 			end
 		end
 	end
+end)
+
+
+
+-- Divine Light
+local light = Skill.new(NAMESPACE, "usurperX_alt")
+surp:add_secondary(light)
+light:set_skill_icon(sprite_skills, 7)
+light.cooldown = 0 * 60
+light.allow_buffered_input = true
+light.is_primary = false
+light.is_utility = false
+light.does_change_activity_state = true
+light.override_strafe_direction = true
+light:clear_callbacks()
+
+local stlight = State.new(NAMESPACE, "usurperStateDivineLight")
+stlight:clear_callbacks()
+
+light:onActivate(function(actor)
+	actor:enter_state(stlight)
+end)
+
+stlight:onEnter(function(actor, data)
+	actor.image_index = 0
+	actor.sprite_index = sprite_shoot2
+	
+	local circle = GM.instance_create(actor.x, actor.y, gm.constants.oEfCircle)
+	circle.parent = actor
+	circle.radius = 2
+	circle.image_blend = Color.WHITE
+	actor:screen_shake(2)
+	actor:sound_play(gm.constants.wBossOrbSpawn, 1, 0.8 + math.random() * 0.2)
+	
+	local inst = objOrb:create(actor.x + 48 * actor.image_xscale, actor.y)
+	inst.parent = actor
+	inst.image_xscale = actor.image_xscale
+	inst.direction = actor:skill_util_facing_direction()
+end)
+
+stlight:onStep(function(actor, data)
+	actor:skill_util_fix_hspeed()
+	actor:actor_animation_set(actor.sprite_index, 0.25)
+	actor:skill_util_exit_state_on_anim_end()
 end)
 
 
@@ -1188,6 +1321,33 @@ stslash:onStep(function(actor, data)
 		
 		actor:sound_play(gm.constants.wHANDShoot1_2, 0.7, 1.9 + math.random() * 0.3)
 		actor:screen_shake(2 * data.tier)
+		
+		local list = List.new()
+		
+		--actor:collision_rectangle_list(actor.x - 27 * actor.image_xscale, actor.y - 32, actor.x + 77 * actor.image_xscale, actor.y + 16, objOrb, false, false, list, false)
+		--for _, orb in ipairs(list) do
+		for _, orb in ipairs(Instance.find_all(objOrb)) do
+			orb:get_data().state = 2
+			orb.direction = actor:skill_util_facing_direction()
+			orb.speed = 8 + data.tier * 8
+		end
+		
+		list:clear()
+		
+		for _, shadow in ipairs(Instance.find_all(objClone)) do
+			if shadow.parent.value == actor.value then
+				local pos = shadow.x + (shadow.x - actor.x)
+				--actor:collision_rectangle_list(pos - 27 * -actor.image_xscale, actor.y - 32, pos + 77 * -actor.image_xscale, actor.y + 16, objOrb, false, false, list, false)
+				--for _, orb in ipairs(list) do
+				for _, orb in ipairs(Instance.find_all(objOrb)) do
+					orb:get_data().state = 2
+					orb.direction = actor:skill_util_facing_direction() + 180
+					orb.speed = data.tier * 12
+				end
+			end
+		end
+		
+		list:destroy()
 		
 		if gm._mod_net_isHost() then
 			for i=0, actor:buff_stack_count(Buff.find("ror", "shadowClone")) do
