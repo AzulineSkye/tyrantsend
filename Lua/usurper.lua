@@ -500,8 +500,8 @@ objBlade:onStep(function(self)
 end)
 
 local objOrb = Object.new(NAMESPACE, "usurperDivineLightOrb")
-objMaelstrom.obj_sprite = gm.constants.sEfWormOrbSpawn
-objMaelstrom.obj_depth = 0
+objOrb.obj_sprite = gm.constants.sEfWormOrbSpawn
+objOrb.obj_depth = 0
 objOrb:clear_callbacks()
 
 objOrb:onCreate(function(self)
