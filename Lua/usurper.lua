@@ -42,6 +42,7 @@ local sprite_drone_shoot = 			Resources.sprite_load(NAMESPACE, "usurperDroneShoo
 local sprite_palette = 				Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
 local sprite_loadout_palette = 		Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
 local sprite_void = 				Resources.sprite_load(NAMESPACE, "usurperVoid", path.combine(PATH, "Sprites/void.png"), 5, 4, 4)
+local sprite_eye = 					Resources.sprite_load(NAMESPACE, "usurperEye", path.combine(PATH, "Sprites/eye.png"), 1, 6, 6)
 local sound_charge = 				Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
 local sound_counter = 				Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
 
@@ -185,6 +186,16 @@ rTrail:set_sprite(sprite_void, true, true, false)
 rTrail:set_alpha2(1, 0)
 rTrail:set_life(16, 16)
 
+local holy = Particle.new(NAMESPACE, "usurperHoly")
+holy:set_shape(Particle.SHAPE.line)
+holy:set_scale(0.2, 0.15)
+holy:set_colour3(Color.from_hex(0xAECDEE), Color.from_hex(0xAECDEE), Color.WHITE)
+holy:set_direction(0, 360, 0, 0)
+holy:set_speed(6, 9, -0.3, 0)
+holy:set_orientation(0, 0, 0, 0, true)
+holy:set_alpha3(1, 1, 0)
+holy:set_life(30, 30)
+
 
 
 surp:onStep(function(actor)
@@ -321,7 +332,13 @@ objClone:clear_callbacks()
 objClone:onCreate(function(self)
 	local data = self:get_data()
 	self.parent = -4
-	
+end)
+
+objClone:onDraw(function(self)
+	local actor = self.parent
+	local pos = self.x + (self.x - actor.x)
+	local alpha = 0.8 + 0.2 * math.sin((360 - actor:get_data().clone) * 0.05)
+	gm.draw_sprite_ext(sprite_eye, 0, pos - actor.image_xscale, actor.y - 5, 1, 1, 0, Color.WHITE, alpha)
 end)
 
 objClone:onStep(function(self)
@@ -483,6 +500,8 @@ objBlade:onStep(function(self)
 end)
 
 local objOrb = Object.new(NAMESPACE, "usurperDivineLightOrb")
+objMaelstrom.obj_sprite = gm.constants.sEfWormOrbSpawn
+objMaelstrom.obj_depth = 0
 objOrb:clear_callbacks()
 
 objOrb:onCreate(function(self)
@@ -509,6 +528,14 @@ objOrb:onStep(function(self)
 	
 	local data = self:get_data()
 	
+	if self.life % 60 == 0 and self.life <= 180 then
+		self:sound_play(gm.constants.wBossOrbShoot, 1, 1.2 + math.random() * 0.2)
+		local flash = GM.instance_create(self.x, self.y, gm.constants.oEfFlash)
+		flash.parent = self
+		flash.rate = 0.05
+		flash.image_alpha = 1
+	end
+	
 	if self.life <= 0 then
 		self:destroy()
 	end
@@ -523,8 +550,11 @@ objOrb:onStep(function(self)
 			self.sprite_index = gm.constants.sEfWormOrbIdle
 			self.image_index = 0
 			data.state = 1
-		end	
+		end
 	elseif data.state == 2 then
+		self.sprite_index = gm.constants.sEfWormOrbFast
+		self.image_index = math.min(4, self.speed / 3)
+		
 		for _, victim in ipairs(self:get_collisions(gm.constants.pActorCollisionBase)) do
 			if self.parent:attack_collision_canhit(victim) then
 				local flash = GM.instance_create(victim.x, victim.y, gm.constants.oEfFlash)
@@ -538,22 +568,25 @@ objOrb:onStep(function(self)
 		end
 		
 		if self.speed == 0 then
-			data.state = 1
+			self.sprite_index = gm.constants.sEfWormOrbIdle
+			self.image_index = 0
 			self.life = 600
+			data.state = 1
 		end
 	end
 end)
 
 objOrb:onDestroy(function(self)
 	local data = self:get_data()
-	self:sound_play(gm.constants.wBoss1DeathWarp, 0.8, 0.8 + math.random() * 0.2)
-	self:sound_play(gm.constants.wTurtleExplosion, 1.2, 0.8 + math.random() * 0.2)
+	self:sound_play(gm.constants.wBossFinalDeathWarp, 1, 1.2 + math.random() * 0.2)
+	self:sound_play(gm.constants.wChildDeath, 1, 0.6 + math.random() * 0.2)
 	self:screen_shake(4)
+	holy:create(self.x, self.y, 8, Particle.SYSTEM.above)
 	
 	if self.parent:is_authority() then
 		local buff_shadow_clone = Buff.find("ror", "shadowClone")
 		for i=0, self.parent:buff_stack_count(buff_shadow_clone) do
-			local attack = self.parent:fire_explosion(self.x, self.y, 96, 96, math.max(2, self.speed / 2 + 2 / 3), gm.constants.sEfArtiStarExplode2, gm.constants.sSparks5)
+			local attack = self.parent:fire_explosion(self.x, self.y, 96, 96, math.max(4, self.speed / 2), gm.constants.sEfArtiStarExplode2, gm.constants.sSparks5)
 			attack.attack_info.climb = i * 8
 		end
 	end
@@ -892,11 +925,8 @@ Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hi
 	if hit_info.gildedjacket == 1 and hit_info.parent:exists() then
 		local victim = hit_info.target
 		local actor = hit_info.parent
-		
-		local distance = math.abs(victim.x - actor.x)
-		distance = math.max(distance, 40)
-		distance = math.min(distance, 160)
-		local multiplier = -1 * ((distance - 40) / 120) + 1.5
+		local multiplier = math.max(1, 600 - math.abs(victim.x - actor.x)) / 400
+		print(multiplier)
 		hit_info.damage = hit_info.damage * multiplier
 	elseif hit_info.gildedjacket == 2 and hit_info.parent:exists() then
 		local victim = hit_info.target
@@ -904,10 +934,8 @@ Callback.add(Callback.TYPE.onAttackHit, "usurperGildedJacketDamage", function(hi
 		for _, shadow in ipairs(Instance.find_all(objClone)) do
 			if shadow.parent.value == actor.value then
 				local pos = shadow.x + (shadow.x - actor.x)
-				local distance = math.abs(victim.x - pos)
-				distance = math.max(distance, 40)
-				distance = math.min(distance, 160)
-				local multiplier = -1 * ((distance - 40) / 120) + 1.5
+				local multiplier = math.max(1, 600 - math.abs(victim.x - pos)) / 400
+				print(multiplier)
 				hit_info.damage = hit_info.damage * multiplier
 			end
 		end
@@ -920,7 +948,7 @@ end)
 local light = Skill.new(NAMESPACE, "usurperX_alt")
 surp:add_secondary(light)
 light:set_skill_icon(sprite_skills, 7)
-light.cooldown = 0 * 60
+light.cooldown = 6 * 60
 light.allow_buffered_input = true
 light.is_primary = false
 light.is_utility = false
@@ -950,6 +978,24 @@ stlight:onEnter(function(actor, data)
 	inst.parent = actor
 	inst.image_xscale = actor.image_xscale
 	inst.direction = actor:skill_util_facing_direction()
+	
+	-- summon the orb for the clone
+	for _, shadow in ipairs(Instance.find_all(objClone)) do
+		if shadow.parent.value == actor.value then
+			local pos = shadow.x + (shadow.x - actor.x)
+			local circle = GM.instance_create(pos, actor.y, gm.constants.oEfCircle)
+			circle.parent = actor
+			circle.radius = 2
+			circle.image_blend = Color.BLACK
+			actor:sound_play(gm.constants.wBossOrbSpawn, 1, 0.8 + math.random() * 0.2, pos, actor.y)
+			actor:sound_play(gm.constants.wJarSouls, 0,8, 1.4 + math.random() * 0.2, pos, actor.y)
+	
+			local inst = objOrb:create(pos + 48 * -actor.image_xscale, actor.y)
+			inst.parent = actor
+			inst.image_xscale = -actor.image_xscale
+			inst.direction = actor:skill_util_facing_direction() + 180
+		end
+	end
 end)
 
 stlight:onStep(function(actor, data)
@@ -1134,7 +1180,7 @@ stslash:onStep(function(actor, data)
 		end
 		
 		if data.charge < 60 then
-			data.charge = data.charge + actor.attack_speed
+			data.charge = data.charge + 1
 		else
 			if actor:item_stack_count(Item.find("ror", "ancientScepter")) > 0 then
 				data.tier = 1
@@ -1286,10 +1332,6 @@ stslash:onStep(function(actor, data)
 	end
 	
 	if actor.image_index >= 8 and data.fired == 0 then
-		if actor:item_stack_count(Item.find("ror", "ancientScepter")) <= 0 then
-			actor:move_contact_solid(270, 0)
-		end
-		
 		if actor:item_stack_count(Item.find("ror", "ancientScepter")) > 0 then
 			actor.pVspeed = -8
 			local bullet = objMaelstrom:create(actor.x, actor.y)
@@ -1322,27 +1364,48 @@ stslash:onStep(function(actor, data)
 		actor:sound_play(gm.constants.wHANDShoot1_2, 0.7, 1.9 + math.random() * 0.3)
 		actor:screen_shake(2 * data.tier)
 		
+		local width = 104
+		local height = 64
 		local list = List.new()
 		
-		--actor:collision_rectangle_list(actor.x - 27 * actor.image_xscale, actor.y - 32, actor.x + 77 * actor.image_xscale, actor.y + 16, objOrb, false, false, list, false)
-		--for _, orb in ipairs(list) do
-		for _, orb in ipairs(Instance.find_all(objOrb)) do
-			orb:get_data().state = 2
-			orb.direction = actor:skill_util_facing_direction()
-			orb.speed = 8 + data.tier * 8
+		actor:collision_rectangle_list(actor.x + 25 * actor.image_xscale - width / 2, actor.y - height / 2, actor.x + 25 * actor.image_xscale + width / 2, actor.y + height / 2, objOrb.base, false, true, list, false)
+		for _, orb in ipairs(list) do
+			if orb.__object_index == objOrb.value then
+				if orb:get_data().state == 1 then
+					orb:get_data().state = 2
+					orb.direction = actor:skill_util_facing_direction()
+					orb.image_xscale = actor.image_xscale
+					orb.speed = 6 + data.tier * 6
+					
+					holy:create(orb.x, orb.y, math.max(3, 3 * data.tier), Particle.SYSTEM.middle)
+					
+					orb:sound_play(gm.constants.wBoss1DeathWarp, 0.8, 0.8 + math.random() * 0.2)
+					orb:sound_play(gm.constants.wTurtleExplosion, 1.2, 0.8 + math.random() * 0.2)
+				end
+			end
 		end
 		
 		list:clear()
 		
+		-- alt shift orb interaction
 		for _, shadow in ipairs(Instance.find_all(objClone)) do
 			if shadow.parent.value == actor.value then
 				local pos = shadow.x + (shadow.x - actor.x)
-				--actor:collision_rectangle_list(pos - 27 * -actor.image_xscale, actor.y - 32, pos + 77 * -actor.image_xscale, actor.y + 16, objOrb, false, false, list, false)
-				--for _, orb in ipairs(list) do
-				for _, orb in ipairs(Instance.find_all(objOrb)) do
-					orb:get_data().state = 2
-					orb.direction = actor:skill_util_facing_direction() + 180
-					orb.speed = data.tier * 12
+				actor:collision_rectangle_list(pos + 25 * -actor.image_xscale - width / 2, actor.y - height / 2, pos + 25 * -actor.image_xscale + width / 2, actor.y + height / 2, objOrb.base, false, true, list, false)
+				for _, orb in ipairs(list) do
+					if orb.__object_index == objOrb.value then
+						if orb:get_data().state == 1 then
+							orb:get_data().state = 2
+							orb.direction = actor:skill_util_facing_direction() + 180
+							orb.image_xscale = -actor.image_xscale
+							orb.speed = 6 + data.tier * 6
+							
+							holy:create(orb.x, orb.y, 3, Particle.SYSTEM.middle)
+							
+							orb:sound_play(gm.constants.wBoss1DeathWarp, 0.8, 0.8 + math.random() * 0.2)
+							orb:sound_play(gm.constants.wTurtleExplosion, 1.2, 0.8 + math.random() * 0.2)
+						end
+					end
 				end
 			end
 		end
@@ -1351,7 +1414,7 @@ stslash:onStep(function(actor, data)
 		
 		if gm._mod_net_isHost() then
 			for i=0, actor:buff_stack_count(Buff.find("ror", "shadowClone")) do
-				local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y - 8, 104, 48, math.max(5, 5 * 1.25 * data.tier), nil, gm.constants.sSparks7)
+				local attack = actor:fire_explosion(actor.x + 25 * actor.image_xscale, actor.y, width, height, math.max(5, 5 * 1.25 * data.tier), nil, gm.constants.sSparks7)
 				attack.attack_info:set_stun(1.5, actor.image_xscale, Attack_Info.KNOCKBACK_KIND.standart)
 				attack.attack_info.climb = i * 8
 				attack.attack_info.knockup = 3
@@ -1363,7 +1426,7 @@ stslash:onStep(function(actor, data)
 				if shadow.parent.value == actor.value then
 					local pos = shadow.x + (shadow.x - actor.x)
 					for i=0, actor:buff_stack_count(Buff.find("ror", "shadowClone")) do
-						local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y - 8, 104, 48, math.max(5, 5 * 1.25 * data.tier), nil, gm.constants.sSparks7)
+						local attack = actor:fire_explosion(pos + 25 * -actor.image_xscale, actor.y, width, height, math.max(5, 5 * 1.25 * data.tier), nil, gm.constants.sSparks7)
 						attack.attack_info:set_stun(1.5, -actor.image_xscale, Attack_Info.KNOCKBACK_KIND.standart)
 						attack.attack_info.climb = 8 + i * 8
 						attack.attack_info.knockup = 3
@@ -1373,9 +1436,10 @@ stslash:onStep(function(actor, data)
 			end
 		end
 		
-		Particle.find("ror", "Spark"):create(actor.x + 54 * actor.image_xscale, actor.y + 10, math.max(3, 3 * data.tier), Particle.SYSTEM.middle)
-		Particle.find("ror", "Rubble2"):create(actor.x + 54 * actor.image_xscale, actor.y + 10, math.max(2, 2 * data.tier), Particle.SYSTEM.middle)
-		-- alt shift slash particles
+		if not gm.bool(actor.free) then
+			Particle.find("ror", "Spark"):create(actor.x + 54 * actor.image_xscale, actor.y + 10, math.max(3, 3 * data.tier), Particle.SYSTEM.middle)
+			Particle.find("ror", "Rubble2"):create(actor.x + 54 * actor.image_xscale, actor.y + 10, math.max(2, 2 * data.tier), Particle.SYSTEM.middle)
+			-- alt shift slash particles
 			for _, shadow in ipairs(Instance.find_all(objClone)) do
 				if shadow.parent.value == actor.value then
 					local pos = shadow.x + (shadow.x - actor.x)
@@ -1383,6 +1447,7 @@ stslash:onStep(function(actor, data)
 					Particle.find("ror", "Rubble2"):create(pos + 54 * -actor.image_xscale, actor.y + 10, math.max(2, 2 * data.tier), Particle.SYSTEM.middle)
 				end
 			end
+		end
 		data.fired = 1
 	end
 	

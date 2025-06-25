@@ -23,7 +23,7 @@
 		},
 	"usurperX_alt": {
 			"name": "Divine Light",
-			"description": "Summon an <y>orb of light</c> in front of you. \nHitting it with your special skill propels it forward for up to <y>1200% damage</c>, depending on it's <b>velocity</c>."
+			"description": "Summon an <y>orb of light</c> in front of you. \n<b>Hitting it with a special skill</c> propels it forward for up to <y>1200% damage</c>, <b>depending on it's velocity</c>."
 		},
 	"usurperC": {
 			"name": "Transcendant Dive",
