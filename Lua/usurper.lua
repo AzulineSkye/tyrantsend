@@ -894,6 +894,8 @@ stjacket:onStep(function(actor, data)
 			for i=0, actor:buff_stack_count(buff_shadow_clone) do
 				local attack = actor:fire_bullet(actor.x, actor.y, 600, actor:skill_util_facing_direction(), 3, 1, gm.constants.sSparks2, Attack_Info.TRACER.commando2, true)
 				attack.attack_info.climb = i * 8
+				attack.attack_info.knockback = 6
+				attack.attack_info.knockback_direction = actor.image_xscale
 				attack.attack_info.gildedjacket = 1
 				attack.attack_info.parent = actor
 			end
@@ -905,6 +907,8 @@ stjacket:onStep(function(actor, data)
 					for i=0, actor:buff_stack_count(buff_shadow_clone) do
 						local attack = actor:fire_bullet(pos, actor.y, 600, actor:skill_util_facing_direction() + 180, 3, 1, gm.constants.sSparks2, Attack_Info.TRACER.commando2, true)
 						attack.attack_info.climb = 8 + i * 8
+						attack.attack_info.knockback = 6
+						attack.attack_info.knockback_direction = -actor.image_xscale
 						attack.attack_info.gildedjacket = 2
 						attack.attack_info.parent = actor
 					end
