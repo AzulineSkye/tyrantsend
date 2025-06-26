@@ -42,7 +42,7 @@ local sprite_drone_shoot = 			Resources.sprite_load(NAMESPACE, "usurperDroneShoo
 local sprite_palette = 				Resources.sprite_load(NAMESPACE, "usurperPallete", path.combine(PATH, "Sprites/pallete.png"))
 local sprite_loadout_palette = 		Resources.sprite_load(NAMESPACE, "usurperSelectPallete", path.combine(PATH, "Sprites/selectPallete.png"))
 local sprite_void = 				Resources.sprite_load(NAMESPACE, "usurperVoid", path.combine(PATH, "Sprites/void.png"), 5, 4, 4)
-local sprite_eye = 					Resources.sprite_load(NAMESPACE, "usurperEye", path.combine(PATH, "Sprites/eye.png"), 1, 6, 6)
+local sprite_eye = 					Resources.sprite_load(NAMESPACE, "usurperEye", path.combine(PATH, "Sprites/eye.png"), 4, 6, 6)
 local sound_charge = 				Resources.sfx_load(NAMESPACE, "usurperCharge", path.combine(PATH, "Sprites/charge.ogg"))
 local sound_counter = 				Resources.sfx_load(NAMESPACE, "usurperCounter", path.combine(PATH, "Sprites/counter.ogg"))
 
@@ -337,8 +337,21 @@ end)
 objClone:onDraw(function(self)
 	local actor = self.parent
 	local pos = self.x + (self.x - actor.x)
-	local alpha = 0.8 + 0.2 * math.sin((360 - actor:get_data().clone) * 0.05)
-	gm.draw_sprite_ext(sprite_eye, 0, pos - actor.image_xscale, actor.y - 5, 1, 1, 0, Color.WHITE, alpha)
+	local alpha = 0.8 + 0.2 * math.sin(actor:get_data().clone) * 0.05
+	
+	if not actor:get_data().index then
+		actor:get_data().index = 0
+	end
+	
+	if actor:get_data().clone % 8 == 0 then
+		actor:get_data().index = actor:get_data().index + 1
+	end
+	
+	if actor:get_data().index >= 4 then
+		actor:get_data().index = 0
+	end
+	
+	gm.draw_sprite_ext(sprite_eye, actor:get_data().index, pos - actor.image_xscale, actor.y - 5, 1, 1, 0, Color.WHITE, alpha)
 end)
 
 objClone:onStep(function(self)
