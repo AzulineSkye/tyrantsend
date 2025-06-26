@@ -4,7 +4,7 @@ local sprite_portrait_small	= 		Resources.sprite_load(NAMESPACE, "usurperPortrai
 local sprite_log = 					Resources.sprite_load(NAMESPACE, "usurperLog", path.combine(PATH, "Sprites/log.png"))
 local sprite_skills = 				Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 8)
 
-local sprite_idle = 				Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine(PATH, "Sprites/idle.png"), 1, 5, 10)
+local sprite_idle = 				Resources.sprite_load(NAMESPACE, "usurperIdle", path.combine(PATH, "Sprites/idle.png"), 8, 11, 10, 0.8)
 local sprite_idle_half = 			Resources.sprite_load(NAMESPACE, "usurperIdleHalf", path.combine(PATH, "Sprites/idleHalf.png"), 1, 5, 10)
 local sprite_walk = 				Resources.sprite_load(NAMESPACE, "usurperWalk", path.combine(PATH, "Sprites/walk.png"), 8, 15, 18)
 local sprite_walk_half = 			Resources.sprite_load(NAMESPACE, "usurperWalkHalf", path.combine(PATH, "Sprites/walkHalf.png"), 8, 5, 11)
