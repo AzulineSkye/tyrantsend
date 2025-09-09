@@ -1,5 +1,5 @@
 local sprite_loadout = 				Resources.sprite_load(NAMESPACE, "usurperSelect", path.combine(PATH, "Sprites/select.png"), 13, 28, 0)
-local sprite_portrait = 			Resources.sprite_load(NAMESPACE, "usurperPortrait", path.combine(PATH, "Sprites/portrait.png"), 3)
+local sprite_portrait = 			Resources.sprite_load(NAMESPACE, "usurperPortrait", path.combine(PATH, "Sprites/portrait.png"), 4)
 local sprite_portrait_small	= 		Resources.sprite_load(NAMESPACE, "usurperPortraitSmall", path.combine(PATH, "Sprites/portraitSmall.png"))
 local sprite_log = 					Resources.sprite_load(NAMESPACE, "usurperLog", path.combine(PATH, "Sprites/log.png"))
 local sprite_skills = 				Resources.sprite_load(NAMESPACE, "usurperSkills", path.combine(PATH, "Sprites/skills.png"), 8)
@@ -111,14 +111,7 @@ surp:set_animations({
 	decoy = sprite_decoy,
 })
 
-surp:set_palettes(sprite_palette, sprite_pallete, sprite_pallete)
-surp:add_skin("Faithful", 1)
-surp:add_skin("Malice", 2, sprite_loadout_malice, sprite_portrait_malice, sprite_portrait_small_malice)
-surp:add_skin("Arctic", 3, sprite_loadout_arctic, sprite_portrait_arctic, sprite_portrait_small_arctic)
-surp:add_skin("Android", 4, sprite_loadout_android, sprite_portrait_android, sprite_portrait_small_android)
-surp:add_skin("Arid", 5, sprite_loadout_arid, sprite_portrait_arid, sprite_portrait_small_arid)
-surp:add_skin("Replika", 6, sprite_loadout_replika, sprite_portrait_replika, sprite_portrait_small_replika)
-surp:add_skin("Hemorrhage", 7, sprite_loadout_hemorrhage, sprite_portrait_hemorrhage, sprite_portrait_small_hemorrhage)
+
 
 surp:set_cape_offset(0, -8, 1, -2)
 surp:set_primary_color(Color.from_rgb(244, 243, 183))
@@ -129,6 +122,16 @@ surp.sprite_portrait_small = sprite_portrait_small
 surp.sprite_title = sprite_walk
 surp.sprite_idle = sprite_idle
 surp.sprite_credits = sprite_credits
+
+surp:set_palettes(sprite_palette, sprite_pallete, sprite_pallete)
+surp:add_skin("Faithful", 1)
+surp:add_skin("Malice", 2, sprite_loadout_malice, sprite_portrait_malice, sprite_portrait_small_malice)
+surp:add_skin("Arctic", 3, sprite_loadout_arctic, sprite_portrait_arctic, sprite_portrait_small_arctic)
+surp:add_skin("Android", 4, sprite_loadout_android, sprite_portrait_android, sprite_portrait_small_android)
+surp:add_skin("Arid", 5, sprite_loadout_arid, sprite_portrait_arid, sprite_portrait_small_arid)
+surp:add_skin("Replika", 6, sprite_loadout_replika, sprite_portrait_replika, sprite_portrait_small_replika)
+surp:add_skin("Hemorrhage", 7, sprite_loadout_hemorrhage, sprite_portrait_hemorrhage, sprite_portrait_small_hemorrhage)
+
 surp:clear_callbacks()
 
 local surp_log = Survivor_Log.new(surp, sprite_log, sprite_walk)
@@ -260,7 +263,7 @@ objMaelstrom:onStep(function(self)
 	self:collision_rectangle_list(self.x - 110, self.y - 110, self.x + 110, self.y + 110, gm.constants.pActorCollisionBase, false, true, pulllist, false)
 	for _, victim in ipairs(pulllist) do
 		if victim.team ~= self.parent.team and not GM.actor_is_boss(victim) then
-			if gm.collision_line(victim.x, victim.y, self.x, self.y, gm.constants.pBlock, false, true) == -4 then
+			if self:collision_line(victim.x, victim.y, self.x, self.y, gm.constants.pBlock, false, true) == -4 then
 				local direction = gm.degtorad(gm.point_direction(victim.x, victim.y, self.x, self.y))
 				if not victim:is_colliding(gm.constants.pBlock, victim.x + gm.cos(direction) * 2.4 * self.parent.attack_speed, victim.y) then
 					victim.x = victim.x + gm.cos(direction) * 2.4 * self.parent.attack_speed
