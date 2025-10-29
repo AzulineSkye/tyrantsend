@@ -1,0 +1,45 @@
+return {
+survivor = {
+	usurper = {
+		name = "Usurper",
+		nameUpper = "USURPER",
+		description = "The <y>Usurper</c> is a soldier, hardened with experience and lacking humanity. Having stolen the powers of a greater being, he favors close quarters over distance.",
+		endQuote = "..and so he left, finding means to an end.",
+		story = "The sun hung low in the sky.\n\nThe commando looked down upon the control panel. With a trembling arm and gravelly breaths, he reached out in hope of.. something. Escape? Closure? Who could tell what this was worth at this point. The association fell deaf on the overwhelmed soldier. As his mind buzzed with doubt, his arm staggered- and he stopped for a moment. He looked upon his tattered, stained bandages, his armor dented and bruised. For the first time he noticed the thick cracks permeating his helmet. \n\nScars of utter triumph. \n\nAnd as a twisted sense of ecstasy began to root its way through him, the bulwark's dying body gasped its last few words,\n\n'You.. monster...'\n\nThe champion turned around and approached the body, pointing a malfunctioning gun at it with hesitation.. until his paranoia promptly subsided. It was at last clear as day to him. The bulwark was dead. He had won. And with that, the gun slipped from his hand. Temptation immediately pulled him into donning the Tyrant's shredded cape as a sort of trophy. With both of his guns overworked, he hauled the sword of the Tyrant with trembling arms, and began dragging it away from the corpse. \n\nSuddenly, he felt weak. \n\nHe collapsed to the floor, his vision darkened, his heart pounding. Ringing and whispering voices of indecipherable languages filled his ears, and then.. the sensation was gone. As the usurper came back to his senses, he gradually lifted himself up to finally don the sword over his shoulder.. with an unfamiliar boldness. Making his way out of the ruins, he leaped down onto a cliffside view to get a better look at the rising moon gleaming above. As he basked in twilight and the last few drops of rain, something spoke to him..\n\nWith the sun out of sight, he knew now that Providence was far from his final challenge.",
+		}
+	},
+skill = {
+	usurperZ = {
+			name = "Gilded Tap",
+			description = "Shoot rapidly for <y>75% damage</c>. \n<b>Accuracy decreases the longer you fire.</c>"
+		},
+	usurperZ_alt = {
+			name = "Umbral Blade",
+			description = "Swing an apropriated blade for <y>260% damage</c>.\n<b>Your swings are imbued with Umbral energy after using a utility skill.</c>"
+		},
+	usurperX = {
+			name = "Gilded Jacket",
+			description = "Shoot <y>through enemies</c> for <y>up to 450% damage</c>, <b>dealing more damage to closer enemies</c>."
+		},
+	usurperX_alt = {
+			name = "Divine Light",
+			description = "Summon an <y>orb of light</c> in front of you. \n<b>Hitting it with a special skill</c> propels it forward for up to <y>1200% damage</c>, <b>depending on it's velocity</c>."
+		},
+	usurperC = {
+			name = "Transcendant Dive",
+			description = "Roll forwards, summoning an <b>Umbra</c> that <b>counterattacks</c> for <y>300% damage</c> plus <r>a portion of your missing health</c>.\n<b>Hold down to do a stationary counterattack instead.</c>"
+		},
+	usurperC_alt = {
+			name = "Doppelganger",
+			description = "Summon an <b>Umbra</c> that <b>mirrors your movement and attacks</c>."
+		},
+	usurperV = {
+			name = "Tyrant's Slash",
+			description = "<b>Charge</c> and slam an apropriated sword down for <y>up to 2000% damage</c>."
+		},
+	usurperVboosted = {
+			name = "Slicing Luminescence",
+			description = "<b>Charge</c> and swing an apropriated sword upwards for <y>up to 2000% damage</c>, summoning a rending maelstrom dealing <y>up to 1400% damage per second</c>."
+		},
+	},
+}
